@@ -1,6 +1,12 @@
-import { Stack } from 'expo-router';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
+import { Redirect, Stack } from 'expo-router';
 
 export default function MainLayout() {
+  const { isLoggedIn, isHydrated } = useAuth();
+
+  if (!isHydrated) return null;
+  if (!isLoggedIn) return <Redirect href="/(auth)/login" />;
+
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
