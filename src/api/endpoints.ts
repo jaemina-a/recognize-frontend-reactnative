@@ -1,10 +1,9 @@
-// API 엔드포인트 상수
-// TODO: 백엔드 API 확정 후 실제 경로 작성
-
 export const ENDPOINTS = {
   // Auth
   AUTH_KAKAO: '/auth/kakao',
   AUTH_GOOGLE: '/auth/google',
+  AUTH_REFRESH: '/auth/refresh',
+  AUTH_ME: '/auth/me',
   AUTH_LOGOUT: '/auth/logout',
 
   // Room

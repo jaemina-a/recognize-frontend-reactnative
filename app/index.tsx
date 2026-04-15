@@ -1,10 +1,18 @@
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
 import { Redirect } from 'expo-router';
+import { ActivityIndicator, View } from 'react-native';
 
 export default function Index() {
-  // TODO: 로그인 상태에 따라 분기
-  // const { isLoggedIn } = useAuth();
-  // return <Redirect href={isLoggedIn ? '/(main)' : '/(auth)/login'} />;
+  const { isLoggedIn, isHydrated } = useAuth();
 
-  // 와이어프레임: 메인으로 이동
-  return <Redirect href={'/(main)' as any} />;
+  // AsyncStorage에서 상태 복원 중
+  if (!isHydrated) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return <Redirect href={isLoggedIn ? ('/(main)' as any) : ('/(auth)/login' as any)} />;
 }

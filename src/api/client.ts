@@ -1,19 +1,53 @@
-// TODO: axios 또는 fetch 기반 HTTP 클라이언트 설정
-// 와이어프레임 단계에서는 placeholder
-
-const BASE_URL = 'https://api.example.com'; // TODO: 실제 API URL로 교체
+import { CONFIG } from '@/src/constants/config';
+import { useAuthStore } from '@/src/stores/authStore';
+import { ENDPOINTS } from './endpoints';
 
 export async function apiClient<T>(
   endpoint: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T> {
-  const response = await fetch(`${BASE_URL}${endpoint}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      // TODO: Authorization 헤더 추가 (interceptors.ts에서 처리)
-    },
+  const { token, refreshToken, updateAccessToken, logout } =
+    useAuthStore.getState();
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...((options?.headers as Record<string, string>) ?? {}),
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  let response = await fetch(`${CONFIG.API_URL}${endpoint}`, {
     ...options,
+    headers,
   });
+
+  // 401이면 토큰 갱신 시도
+  if (response.status === 401 && refreshToken) {
+    const refreshRes = await fetch(
+      `${CONFIG.API_URL}${ENDPOINTS.AUTH_REFRESH}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      },
+    );
+
+    if (refreshRes.ok) {
+      const data = await refreshRes.json();
+      updateAccessToken(data.accessToken);
+
+      headers['Authorization'] = `Bearer ${data.accessToken}`;
+      response = await fetch(`${CONFIG.API_URL}${endpoint}`, {
+        ...options,
+        headers,
+      });
+    } else {
+      logout();
+      throw new Error('세션이 만료되었습니다.');
+    }
+  }
 
   if (!response.ok) {
     throw new Error(`API Error: ${response.status}`);
