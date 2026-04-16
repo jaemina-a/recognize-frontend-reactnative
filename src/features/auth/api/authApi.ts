@@ -22,4 +22,19 @@ export const authApi = {
 
     return response.json();
   },
+
+  loginWithMock: async (nickname: string): Promise<LoginResponse> => {
+    const response = await fetch(`${CONFIG.API_URL}/auth/mock`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nickname }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error || '목업 로그인에 실패했습니다.');
+    }
+
+    return response.json();
+  },
 };

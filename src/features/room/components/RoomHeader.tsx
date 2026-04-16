@@ -16,9 +16,14 @@ export function RoomHeader({ roomName, roomId }: RoomHeaderProps) {
         <Text className="text-lg">←</Text>
       </Pressable>
       <Text variant="h3">{roomName}</Text>
-      <Pressable onPress={() => router.push(`/room/${roomId}/settings` as any)}>
-        <Text className="text-lg">⚙</Text>
-      </Pressable>
+      <View className="flex-row gap-3">
+        <Pressable onPress={() => router.push(`/room/${roomId}/calendar` as any)}>
+          <Text className="text-lg">📅</Text>
+        </Pressable>
+        <Pressable onPress={() => router.push(`/room/${roomId}/settings` as any)}>
+          <Text className="text-lg">⚙</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }

@@ -29,5 +29,18 @@ export function useAuth() {
     }
   };
 
-  return { user, isLoggedIn, isHydrated, isLoading, loginWithKakao, logout };
+  const loginWithMock = async (nickname: string) => {
+    try {
+      setIsLoading(true);
+      const result = await authApi.loginWithMock(nickname);
+      setAuth(result.user, result.accessToken, result.refreshToken);
+    } catch (error) {
+      console.error('목업 로그인 실패:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { user, isLoggedIn, isHydrated, isLoading, loginWithKakao, loginWithMock, logout };
 }

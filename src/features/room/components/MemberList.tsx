@@ -18,6 +18,10 @@ export function MemberList({ members }: MemberListProps) {
           className="flex-row items-center py-3 border-b border-gray-100"
         >
           <Text className="w-8 text-gray-500 font-semibold">{index + 1}</Text>
+          <View
+            className="w-3 h-3 rounded-full mr-2"
+            style={{ backgroundColor: member.color }}
+          />
           <Avatar name={member.nickname} size={36} className="mr-3" />
           <Text className="flex-1 font-medium">{member.nickname}</Text>
           <Badge label={`${member.totalScore}점`} />

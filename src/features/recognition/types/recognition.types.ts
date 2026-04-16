@@ -1,15 +1,24 @@
 export type Recognition = {
   id: string;
   roomId: string;
-  userId: string;
-  nickname: string;
+  uploaderId: string;
+  uploaderNickname: string;
+  uploaderColor: string;
   photoUrl: string;
   uploadedAt: string;
-  votes: Vote[];
-  recognizedCount: number;
+  isRecognized: boolean;
+  recognizedBy: {
+    userId: string;
+    nickname: string;
+    recognizedAt: string;
+  } | null;
 };
 
-export type Vote = {
-  voterId: string;
-  value: 'recognize' | 'reject';
+export type CalendarDay = {
+  date: string;
+  recognitions: {
+    userId: string;
+    nickname: string;
+    color: string;
+  }[];
 };

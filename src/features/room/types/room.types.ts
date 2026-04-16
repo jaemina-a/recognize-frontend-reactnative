@@ -3,6 +3,7 @@ export type Room = {
   name: string;
   inviteCode: string;
   ownerId: string;
+  maxMembers: number;
   members: RoomMember[];
   createdAt: string;
 };
@@ -12,4 +13,6 @@ export type RoomMember = {
   nickname: string;
   profileImage: string | null;
   totalScore: number;
+  color: string;
+  joinedAt: string;
 };

@@ -1,13 +1,23 @@
 import { ScreenContainer } from '@/src/components/layout';
 import { Button, Text } from '@/src/components/ui';
-import { useRouter } from 'expo-router';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { FlatList, View } from 'react-native';
 import { useRoomList } from '../hooks/useRoomList';
 import { RoomCard } from './RoomCard';
 
 export function RoomListScreen() {
   const router = useRouter();
-  const { rooms } = useRoomList();
+  const { rooms, refetch } = useRoomList();
+  const { logout } = useAuth();
+
+  // 화면에 포커스될 때마다 목록 새로고침 (방 만들기/뒤로가기 후 반영)
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
 
   return (
     <ScreenContainer>
@@ -15,11 +25,19 @@ export function RoomListScreen() {
         {/* 헤더 */}
         <View className="flex-row justify-between items-center mb-6">
           <Text variant="h1">내 방</Text>
-          <Button
-            title="+ 방 만들기"
-            size="sm"
-            onPress={() => router.push('/(main)/create-room' as any)}
-          />
+          <View className="flex-row gap-2">
+            <Button
+              title="로그아웃"
+              size="sm"
+              variant="outlined"
+              onPress={logout}
+            />
+            <Button
+              title="+ 방 만들기"
+              size="sm"
+              onPress={() => router.push('/(main)/create-room' as any)}
+            />
+          </View>
         </View>
 
         {/* 방 목록 */}

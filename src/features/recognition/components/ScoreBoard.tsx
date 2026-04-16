@@ -18,6 +18,10 @@ export function ScoreBoard({ members }: ScoreBoardProps) {
           className="flex-row items-center py-2"
         >
           <Text className="w-6 font-bold text-gray-400">{index + 1}</Text>
+          <View
+            className="w-3 h-3 rounded-full mr-2"
+            style={{ backgroundColor: member.color }}
+          />
           <Avatar name={member.nickname} size={32} className="mr-2" />
           <Text className="flex-1">{member.nickname}</Text>
           <Badge label={`${member.totalScore}점`} />

@@ -1,24 +1,36 @@
-import { useState } from 'react';
+import { useAuthStore } from '@/src/stores/authStore';
+import { useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
 import { FlatList, View } from 'react-native';
 import { useRecognitionFeed } from '../hooks/useRecognitionFeed';
-import { useVote } from '../hooks/useVote';
+import { useRecognize } from '../hooks/useVote';
 import { EmptyFeed } from './EmptyFeed';
 import { RecognitionCard } from './RecognitionCard';
-import { VoteOverlay } from './VoteOverlay';
 
 type RecognitionFeedProps = {
   roomId: string;
+  onRecognized?: () => void;
 };
 
-export function RecognitionFeed({ roomId }: RecognitionFeedProps) {
-  const { feed } = useRecognitionFeed(roomId);
-  const { vote } = useVote();
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+export function RecognitionFeed({ roomId, onRecognized }: RecognitionFeedProps) {
+  const { feed, refetch } = useRecognitionFeed(roomId);
+  const { recognize } = useRecognize();
+  const currentUserId = useAuthStore((s) => s.user?.id);
 
-  const handleVote = (value: 'recognize' | 'reject') => {
-    if (selectedId) {
-      vote(selectedId, value);
-      setSelectedId(null);
+  // 화면 포커스 시 피드 새로고침 (업로드 후 돌아올 때 반영)
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
+
+  const handleRecognize = async (photoId: string) => {
+    try {
+      await recognize(photoId);
+      refetch();
+      onRecognized?.();
+    } catch {
+      // Error handled in hook
     }
   };
 
@@ -33,17 +45,11 @@ export function RecognitionFeed({ roomId }: RecognitionFeedProps) {
         keyExtractor={(item) => item.id}
         contentContainerClassName="px-5 pt-4"
         renderItem={({ item }) => (
-          <View className="relative">
-            <RecognitionCard
-              recognition={item}
-              onPress={() => setSelectedId(item.id)}
-            />
-            <VoteOverlay
-              visible={selectedId === item.id}
-              onVote={handleVote}
-              onClose={() => setSelectedId(null)}
-            />
-          </View>
+          <RecognitionCard
+            recognition={item}
+            isOwnPhoto={item.uploaderId === currentUserId}
+            onRecognize={() => handleRecognize(item.id)}
+          />
         )}
       />
     </View>

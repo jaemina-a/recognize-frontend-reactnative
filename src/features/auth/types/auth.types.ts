@@ -2,7 +2,7 @@ export type User = {
   id: string;
   nickname: string;
   profileImage: string | null;
-  provider: 'kakao' | 'google';
+  provider: 'kakao' | 'google' | 'mock';
 };
 
 export type AuthToken = {

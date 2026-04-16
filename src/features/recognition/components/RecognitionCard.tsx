@@ -1,33 +1,59 @@
-import { Text } from '@/src/components/ui';
+import { Badge, Text } from '@/src/components/ui';
+import { CONFIG } from '@/src/constants/config';
 import { formatTime } from '@/src/utils/format';
+import { Image } from 'expo-image';
 import { Pressable, View } from 'react-native';
 import type { Recognition } from '../types/recognition.types';
 
 type RecognitionCardProps = {
   recognition: Recognition;
-  onPress: () => void;
+  onRecognize: () => void;
+  isOwnPhoto: boolean;
 };
 
-export function RecognitionCard({ recognition, onPress }: RecognitionCardProps) {
+export function RecognitionCard({ recognition, onRecognize, isOwnPhoto }: RecognitionCardProps) {
   return (
-    <Pressable onPress={onPress} className="mb-4">
+    <View className="mb-4">
       <View className="bg-gray-200 rounded-2xl h-48 justify-center items-center overflow-hidden">
-        {/* TODO: 실제 사진으로 교체 — recognition.photoUrl */}
-        <View className="absolute inset-0 bg-gray-300" />
+        {recognition.photoUrl ? (
+          <Image
+            source={{ uri: `${CONFIG.API_URL}/${recognition.photoUrl}` }}
+            style={{ width: '100%', height: '100%' }}
+            contentFit="cover"
+          />
+        ) : (
+          <View className="absolute inset-0 bg-gray-300" />
+        )}
 
-        {/* 중앙 시간 표시 */}
-        <View className="bg-black/60 rounded-full px-4 py-2 z-10">
+        <View className="absolute bg-black/60 rounded-full px-4 py-2">
           <Text className="text-white font-semibold text-lg">
             {formatTime(recognition.uploadedAt)}
           </Text>
         </View>
       </View>
 
-      {/* 하단 정보 */}
       <View className="flex-row justify-between items-center mt-2 px-1">
-        <Text className="font-medium">{recognition.nickname}</Text>
-        <Text variant="caption">인정 {recognition.recognizedCount}개</Text>
+        <View className="flex-row items-center">
+          <View
+            className="w-3 h-3 rounded-full mr-2"
+            style={{ backgroundColor: recognition.uploaderColor }}
+          />
+          <Text className="font-medium">{recognition.uploaderNickname}</Text>
+        </View>
+
+        {recognition.isRecognized ? (
+          <Badge label={`✓ ${recognition.recognizedBy?.nickname}이 인정`} />
+        ) : !isOwnPhoto ? (
+          <Pressable
+            onPress={onRecognize}
+            className="bg-black rounded-full px-4 py-1.5"
+          >
+            <Text className="text-white text-sm font-semibold">인정하기</Text>
+          </Pressable>
+        ) : (
+          <Text variant="caption">인정 대기중</Text>
+        )}
       </View>
-    </Pressable>
+    </View>
   );
 }

@@ -1,36 +1,26 @@
-// TODO: 방 목록 데이터 훅
+import { useCallback, useEffect, useState } from 'react';
+import { roomApi } from '../api/roomApi';
 import type { Room } from '../types/room.types';
 
-// 와이어프레임용 더미 데이터
-const DUMMY_ROOMS: Room[] = [
-  {
-    id: '1',
-    name: '갓생 인증방 🔥',
-    inviteCode: 'ABC123',
-    ownerId: 'user1',
-    members: [
-      { userId: 'user1', nickname: '재민', profileImage: null, totalScore: 5 },
-      { userId: 'user2', nickname: '민수', profileImage: null, totalScore: 3 },
-    ],
-    createdAt: '2026-04-10T09:00:00Z',
-  },
-  {
-    id: '2',
-    name: '운동 인증 💪',
-    inviteCode: 'DEF456',
-    ownerId: 'user1',
-    members: [
-      { userId: 'user1', nickname: '재민', profileImage: null, totalScore: 2 },
-    ],
-    createdAt: '2026-04-12T14:00:00Z',
-  },
-];
-
 export function useRoomList() {
-  // TODO: API 연동
-  return {
-    rooms: DUMMY_ROOMS,
-    isLoading: false,
-    refetch: () => {},
-  };
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const refetch = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const data = await roomApi.getRooms();
+      setRooms(data);
+    } catch (error) {
+      console.error('방 목록 조회 실패:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  return { rooms, isLoading, refetch };
 }

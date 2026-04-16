@@ -2,16 +2,26 @@ import { KeyboardAvoidingWrapper, ScreenContainer } from '@/src/components/layou
 import { Button, Input, Text } from '@/src/components/ui';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
+import { roomApi } from '../api/roomApi';
 
 export function JoinRoomForm() {
   const router = useRouter();
   const [inviteCode, setInviteCode] = useState('');
+  const [isJoining, setIsJoining] = useState(false);
 
-  const handleJoin = () => {
-    // TODO: roomApi.joinRoom(inviteCode)
-    console.log('초대코드 참가:', inviteCode);
-    router.back();
+  const handleJoin = async () => {
+    if (!inviteCode.trim()) return;
+    try {
+      setIsJoining(true);
+      const room = await roomApi.joinRoom(inviteCode.trim());
+      router.replace(`/room/${room.id}` as any);
+    } catch (error: any) {
+      const msg = error?.message || '방 참가에 실패했습니다.';
+      Alert.alert('오류', msg);
+    } finally {
+      setIsJoining(false);
+    }
   };
 
   return (
@@ -32,7 +42,7 @@ export function JoinRoomForm() {
           <Button
             title="참가하기"
             onPress={handleJoin}
-            disabled={!inviteCode.trim()}
+            disabled={!inviteCode.trim() || isJoining}
           />
         </View>
       </KeyboardAvoidingWrapper>

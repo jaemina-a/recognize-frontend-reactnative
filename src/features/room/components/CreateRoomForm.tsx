@@ -2,16 +2,29 @@ import { KeyboardAvoidingWrapper, ScreenContainer } from '@/src/components/layou
 import { Button, Input, Text } from '@/src/components/ui';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
+import { roomApi } from '../api/roomApi';
 
 export function CreateRoomForm() {
   const router = useRouter();
   const [roomName, setRoomName] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
 
-  const handleCreate = () => {
-    // TODO: roomApi.createRoom(roomName)
-    console.log('방 만들기:', roomName);
-    router.back();
+  const handleCreate = async () => {
+    console.log('[CreateRoom] handleCreate called, roomName:', roomName.trim());
+    if (!roomName.trim()) return;
+    try {
+      setIsCreating(true);
+      const room = await roomApi.createRoom(roomName.trim());
+      console.log('[CreateRoom] room created:', JSON.stringify(room));
+      router.dismiss();
+      router.push(`/room/${room.id}` as any);
+    } catch (e) {
+      console.error('[CreateRoom] error:', e);
+      Alert.alert('오류', '방 생성에 실패했습니다.');
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   return (
@@ -31,7 +44,7 @@ export function CreateRoomForm() {
           <Button
             title="만들기"
             onPress={handleCreate}
-            disabled={!roomName.trim()}
+            disabled={!roomName.trim() || isCreating}
           />
         </View>
       </KeyboardAvoidingWrapper>
