@@ -19,7 +19,7 @@ const STORAGE_KEY = '@theme-mode';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const systemScheme = useColorScheme();
-  const [mode, setModeState] = useState<ThemeMode>('system');
+  const [mode, setModeState] = useState<ThemeMode>('dark');
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {

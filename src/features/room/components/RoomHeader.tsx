@@ -6,9 +6,11 @@ import { View } from 'react-native';
 type RoomHeaderProps = {
   roomName: string;
   roomId: string;
+  onCalendarPress: () => void;
+  onSettingsPress: () => void;
 };
 
-export function RoomHeader({ roomName, roomId }: RoomHeaderProps) {
+export function RoomHeader({ roomName, onCalendarPress, onSettingsPress }: RoomHeaderProps) {
   const router = useRouter();
   const { colors } = useTheme();
 
@@ -33,12 +35,12 @@ export function RoomHeader({ roomName, roomId }: RoomHeaderProps) {
         <IconButton
           icon="calendar-month-outline"
           variant="standard"
-          onPress={() => router.push(`/room/${roomId}/calendar` as any)}
+          onPress={onCalendarPress}
         />
         <IconButton
           icon="cog-outline"
           variant="standard"
-          onPress={() => router.push(`/room/${roomId}/settings` as any)}
+          onPress={onSettingsPress}
         />
       </View>
     </View>

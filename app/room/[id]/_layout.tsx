@@ -14,8 +14,6 @@ export default function RoomDetailLayout() {
         name="upload"
         options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
       />
-      <Stack.Screen name="settings" />
-      <Stack.Screen name="calendar" />
     </Stack>
   );
 }
