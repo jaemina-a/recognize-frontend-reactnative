@@ -1,4 +1,4 @@
-// TODO: 토스트 알림 구현
+import { elevation, shape, useTheme } from '@/design';
 import { View } from 'react-native';
 import { Text } from '../ui/Text';
 
@@ -8,11 +8,27 @@ type ToastProps = {
 };
 
 export function Toast({ message, visible }: ToastProps) {
+  const { colors } = useTheme();
   if (!visible) return null;
-
   return (
-    <View className="absolute bottom-10 left-6 right-6 bg-black rounded-lg p-4">
-      <Text className="text-white text-center">{message}</Text>
+    <View
+      style={[
+        {
+          position: 'absolute',
+          bottom: 40,
+          left: 24,
+          right: 24,
+          backgroundColor: colors.inverseSurface,
+          borderRadius: shape.extraSmall,
+          paddingHorizontal: 16,
+          paddingVertical: 14,
+        },
+        elevation(3),
+      ]}
+    >
+      <Text variant="bodyMedium" color={colors.inverseOnSurface} style={{ textAlign: 'center' }}>
+        {message}
+      </Text>
     </View>
   );
 }

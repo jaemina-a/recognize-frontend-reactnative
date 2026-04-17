@@ -1,4 +1,5 @@
 import { Badge, Text } from '@/src/components/ui';
+import { shape, useTheme } from '@/design';
 import { CONFIG } from '@/src/constants/config';
 import { formatTime } from '@/src/utils/format';
 import { Image } from 'expo-image';
@@ -12,9 +13,19 @@ type RecognitionCardProps = {
 };
 
 export function RecognitionCard({ recognition, onRecognize, isOwnPhoto }: RecognitionCardProps) {
+  const { colors } = useTheme();
   return (
-    <View className="mb-4">
-      <View className="bg-gray-200 rounded-2xl h-48 justify-center items-center overflow-hidden">
+    <View style={{ marginBottom: 16 }}>
+      <View
+        style={{
+          backgroundColor: colors.surfaceContainerHigh,
+          borderRadius: shape.large,
+          height: 192,
+          justifyContent: 'center',
+          alignItems: 'center',
+          overflow: 'hidden',
+        }}
+      >
         {recognition.photoUrl ? (
           <Image
             source={{ uri: `${CONFIG.API_URL}/${recognition.photoUrl}` }}
@@ -22,36 +33,55 @@ export function RecognitionCard({ recognition, onRecognize, isOwnPhoto }: Recogn
             contentFit="cover"
           />
         ) : (
-          <View className="absolute inset-0 bg-gray-300" />
+          <View style={{ position: 'absolute', inset: 0, backgroundColor: colors.surfaceContainerHighest } as any} />
         )}
 
-        <View className="absolute bg-black/60 rounded-full px-4 py-2">
-          <Text className="text-white font-semibold text-lg">
+        <View
+          style={{
+            position: 'absolute',
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            borderRadius: shape.full,
+            paddingHorizontal: 16,
+            paddingVertical: 6,
+          }}
+        >
+          <Text variant="titleMedium" color="#FFFFFF">
             {formatTime(recognition.uploadedAt)}
           </Text>
         </View>
       </View>
 
-      <View className="flex-row justify-between items-center mt-2 px-1">
-        <View className="flex-row items-center">
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingHorizontal: 4 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
           <View
-            className="w-3 h-3 rounded-full mr-2"
-            style={{ backgroundColor: recognition.uploaderColor }}
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 5,
+              marginRight: 8,
+              backgroundColor: recognition.uploaderColor,
+            }}
           />
-          <Text className="font-medium">{recognition.uploaderNickname}</Text>
+          <Text variant="labelLarge">{recognition.uploaderNickname}</Text>
         </View>
 
         {recognition.isRecognized ? (
-          <Badge label={`✓ ${recognition.recognizedBy?.nickname}이 인정`} />
+          <Badge label={`✓ ${recognition.recognizedBy?.nickname} 인정`} variant="tertiary" />
         ) : !isOwnPhoto ? (
           <Pressable
             onPress={onRecognize}
-            className="bg-black rounded-full px-4 py-1.5"
+            style={({ pressed }) => ({
+              backgroundColor: colors.primary,
+              borderRadius: shape.full,
+              paddingHorizontal: 16,
+              paddingVertical: 8,
+              opacity: pressed ? 0.88 : 1,
+            })}
           >
-            <Text className="text-white text-sm font-semibold">인정하기</Text>
+            <Text variant="labelLarge" color={colors.onPrimary}>인정하기</Text>
           </Pressable>
         ) : (
-          <Text variant="caption">인정 대기중</Text>
+          <Text variant="bodySmall" color={colors.onSurfaceVariant}>인정 대기중</Text>
         )}
       </View>
     </View>

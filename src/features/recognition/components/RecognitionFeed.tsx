@@ -1,23 +1,29 @@
+import type { RoomMember } from '@/src/features/room/types/room.types';
 import { useAuthStore } from '@/src/stores/authStore';
 import { useFocusEffect } from 'expo-router';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FlatList, View } from 'react-native';
 import { useRecognitionFeed } from '../hooks/useRecognitionFeed';
 import { useRecognize } from '../hooks/useVote';
 import { EmptyFeed } from './EmptyFeed';
+import { EmptyMemberCard } from './EmptyMemberCard';
 import { RecognitionCard } from './RecognitionCard';
 
 type RecognitionFeedProps = {
   roomId: string;
+  members?: RoomMember[];
   onRecognized?: () => void;
 };
 
-export function RecognitionFeed({ roomId, onRecognized }: RecognitionFeedProps) {
+type FeedRow =
+  | { kind: 'recognition'; id: string; data: ReturnType<typeof useRecognitionFeed>['feed'][number] }
+  | { kind: 'empty'; id: string; member: RoomMember };
+
+export function RecognitionFeed({ roomId, members = [], onRecognized }: RecognitionFeedProps) {
   const { feed, refetch } = useRecognitionFeed(roomId);
   const { recognize } = useRecognize();
   const currentUserId = useAuthStore((s) => s.user?.id);
 
-  // 화면 포커스 시 피드 새로고침 (업로드 후 돌아올 때 반영)
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -30,27 +36,46 @@ export function RecognitionFeed({ roomId, onRecognized }: RecognitionFeedProps) 
       refetch();
       onRecognized?.();
     } catch {
-      // Error handled in hook
+      /* handled in hook */
     }
   };
 
-  if (feed.length === 0) {
+  // Rows: actual uploads first, then empty cards for members who haven't uploaded.
+  const rows = useMemo<FeedRow[]>(() => {
+    const uploadedIds = new Set(feed.map((f) => f.uploaderId));
+    const recognitionRows: FeedRow[] = feed.map((r) => ({
+      kind: 'recognition',
+      id: `rec-${r.id}`,
+      data: r,
+    }));
+    const emptyRows: FeedRow[] = members
+      .filter((m) => !uploadedIds.has(m.userId))
+      .map((m) => ({ kind: 'empty', id: `empty-${m.userId}`, member: m }));
+    return [...recognitionRows, ...emptyRows];
+  }, [feed, members]);
+
+  if (rows.length === 0) {
     return <EmptyFeed />;
   }
 
   return (
-    <View className="flex-1">
+    <View style={{ flex: 1 }}>
       <FlatList
-        data={feed}
+        data={rows}
         keyExtractor={(item) => item.id}
-        contentContainerClassName="px-5 pt-4"
-        renderItem={({ item }) => (
-          <RecognitionCard
-            recognition={item}
-            isOwnPhoto={item.uploaderId === currentUserId}
-            onRecognize={() => handleRecognize(item.id)}
-          />
-        )}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16 }}
+        renderItem={({ item }) => {
+          if (item.kind === 'empty') {
+            return <EmptyMemberCard nickname={item.member.nickname} color={item.member.color} />;
+          }
+          return (
+            <RecognitionCard
+              recognition={item.data}
+              isOwnPhoto={item.data.uploaderId === currentUserId}
+              onRecognize={() => handleRecognize(item.data.id)}
+            />
+          );
+        }}
       />
     </View>
   );

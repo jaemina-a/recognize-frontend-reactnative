@@ -1,45 +1,103 @@
-import { Pressable, Text, type PressableProps } from 'react-native';
+import { elevation, shape, useTheme } from '@/design';
+import { useMemo } from 'react';
+import { Pressable, StyleSheet, Text, View, type PressableProps } from 'react-native';
 
-// 네이티브 Pressable 기반 버튼 래퍼
-// 크기(size)와 변형(variant)만 조절
+// Material Design 3 Button
+// Variants: filled | tonal | outlined | text | elevated
+// https://m3.material.io/components/buttons/overview
 
-type ButtonProps = PressableProps & {
+type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'text' | 'elevated' | 'ghost';
+type ButtonSize = 'sm' | 'md' | 'lg';
+
+type ButtonProps = Omit<PressableProps, 'children' | 'style'> & {
   title: string;
-  size?: 'sm' | 'md' | 'lg';
-  variant?: 'filled' | 'outlined' | 'ghost';
+  size?: ButtonSize;
+  variant?: ButtonVariant;
+  icon?: React.ReactNode;
+  className?: string;
 };
 
 export function Button({
   title,
   size = 'md',
   variant = 'filled',
+  icon,
+  disabled,
   className = '',
   ...props
 }: ButtonProps) {
-  const sizeClass = {
-    sm: 'py-2 px-3',
-    md: 'py-3 px-5',
-    lg: 'py-4 px-6',
-  }[size];
+  const { colors } = useTheme();
 
-  const variantClass = {
-    filled: 'bg-black',
-    outlined: 'border border-black bg-white',
-    ghost: 'bg-transparent',
-  }[variant];
+  const sizeStyle = useMemo(() => {
+    switch (size) {
+      case 'sm': return { paddingVertical: 8, paddingHorizontal: 16, minHeight: 32, fontSize: 13 };
+      case 'lg': return { paddingVertical: 14, paddingHorizontal: 28, minHeight: 52, fontSize: 16 };
+      default:   return { paddingVertical: 10, paddingHorizontal: 24, minHeight: 40, fontSize: 14 };
+    }
+  }, [size]);
 
-  const textColor = {
-    filled: 'text-white',
-    outlined: 'text-black',
-    ghost: 'text-black',
-  }[variant];
+  const variantStyle = useMemo(() => {
+    switch (variant) {
+      case 'tonal':
+        return { bg: colors.secondaryContainer, fg: colors.onSecondaryContainer, border: 'transparent', elev: 0 as const };
+      case 'outlined':
+        return { bg: 'transparent', fg: colors.primary, border: colors.outline, elev: 0 as const };
+      case 'text':
+      case 'ghost':
+        return { bg: 'transparent', fg: colors.primary, border: 'transparent', elev: 0 as const };
+      case 'elevated':
+        return { bg: colors.surfaceContainerLow, fg: colors.primary, border: 'transparent', elev: 1 as const };
+      case 'filled':
+      default:
+        return { bg: colors.primary, fg: colors.onPrimary, border: 'transparent', elev: 0 as const };
+    }
+  }, [variant, colors]);
 
   return (
     <Pressable
-      className={`${sizeClass} ${variantClass} rounded-lg items-center justify-center ${className}`}
+      disabled={disabled}
+      accessibilityRole="button"
+      className={className}
+      style={({ pressed }) => [
+        styles.base,
+        {
+          backgroundColor: variantStyle.bg,
+          borderColor: variantStyle.border,
+          borderWidth: variant === 'outlined' ? 1 : 0,
+          borderRadius: shape.full,
+          paddingVertical: sizeStyle.paddingVertical,
+          paddingHorizontal: sizeStyle.paddingHorizontal,
+          minHeight: sizeStyle.minHeight,
+          opacity: disabled ? 0.38 : pressed ? 0.88 : 1,
+        },
+        variantStyle.elev > 0 && elevation(variantStyle.elev),
+      ]}
       {...props}
     >
-      <Text className={`${textColor} font-semibold text-base`}>{title}</Text>
+      <View style={styles.row}>
+        {icon ? <View style={{ marginRight: 8 }}>{icon}</View> : null}
+        <Text
+          style={{
+            color: variantStyle.fg,
+            fontSize: sizeStyle.fontSize,
+            fontWeight: '600',
+            letterSpacing: 0.1,
+          }}
+        >
+          {title}
+        </Text>
+      </View>
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  base: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});

@@ -1,3 +1,4 @@
+import { useTheme } from '@/design';
 import { ActivityIndicator, View } from 'react-native';
 
 type LoadingProps = {
@@ -5,13 +6,13 @@ type LoadingProps = {
 };
 
 export function Loading({ fullScreen = false }: LoadingProps) {
+  const { colors } = useTheme();
   if (fullScreen) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#000000" />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
-
-  return <ActivityIndicator size="small" color="#000000" />;
+  return <ActivityIndicator size="small" color={colors.primary} />;
 }

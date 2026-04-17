@@ -1,13 +1,43 @@
+import { elevation, shape, useTheme } from '@/design';
 import { View, type ViewProps } from 'react-native';
 
-// 기본 카드 컨테이너
+// M3 Card — filled | elevated | outlined
 
-type CardProps = ViewProps;
+type CardVariant = 'filled' | 'elevated' | 'outlined';
 
-export function Card({ className = '', ...props }: CardProps) {
+type CardProps = ViewProps & {
+  variant?: CardVariant;
+  padding?: number;
+};
+
+export function Card({ variant = 'elevated', padding = 16, style, ...props }: CardProps) {
+  const { colors } = useTheme();
+
+  const variantStyle = (() => {
+    switch (variant) {
+      case 'filled':
+        return { backgroundColor: colors.surfaceContainerHighest, borderWidth: 0, borderColor: 'transparent', elev: 0 as const };
+      case 'outlined':
+        return { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, elev: 0 as const };
+      case 'elevated':
+      default:
+        return { backgroundColor: colors.surfaceContainerLow, borderWidth: 0, borderColor: 'transparent', elev: 1 as const };
+    }
+  })();
+
   return (
     <View
-      className={`bg-white border border-gray-200 rounded-xl p-4 ${className}`}
+      style={[
+        {
+          backgroundColor: variantStyle.backgroundColor,
+          borderWidth: variantStyle.borderWidth,
+          borderColor: variantStyle.borderColor,
+          borderRadius: shape.medium,
+          padding,
+        },
+        variantStyle.elev > 0 && elevation(variantStyle.elev),
+        style,
+      ]}
       {...props}
     />
   );

@@ -1,19 +1,33 @@
+import { typeScale, useTheme, type TypeToken } from '@/design';
 import { Text as RNText, type TextProps as RNTextProps } from 'react-native';
 
-// 네이티브 Text 래퍼 — 타이포그래피 프리셋
+// M3 type scale + legacy semantic variants (h1/h2/h3/body/caption)
 
-type TextProps = RNTextProps & {
-  variant?: 'h1' | 'h2' | 'h3' | 'body' | 'caption';
+type LegacyVariant = 'h1' | 'h2' | 'h3' | 'body' | 'caption';
+type TextVariant = TypeToken | LegacyVariant;
+
+const LEGACY_MAP: Record<LegacyVariant, TypeToken> = {
+  h1: 'headlineLarge',
+  h2: 'headlineMedium',
+  h3: 'titleLarge',
+  body: 'bodyLarge',
+  caption: 'bodySmall',
 };
 
-export function Text({ variant = 'body', className = '', ...props }: TextProps) {
-  const variantClass = {
-    h1: 'text-3xl font-bold text-black',
-    h2: 'text-2xl font-bold text-black',
-    h3: 'text-xl font-semibold text-black',
-    body: 'text-base text-black',
-    caption: 'text-sm text-gray-500',
-  }[variant];
+type TextProps = RNTextProps & {
+  variant?: TextVariant;
+  color?: string;
+};
 
-  return <RNText className={`${variantClass} ${className}`} {...props} />;
+export function Text({ variant = 'body', color, style, ...props }: TextProps) {
+  const { colors } = useTheme();
+  const token: TypeToken =
+    (LEGACY_MAP as Record<string, TypeToken>)[variant] ?? (variant as TypeToken);
+  const baseColor = variant === 'caption' ? colors.onSurfaceVariant : colors.onSurface;
+  return (
+    <RNText
+      style={[typeScale[token], { color: color ?? baseColor }, style]}
+      {...props}
+    />
+  );
 }

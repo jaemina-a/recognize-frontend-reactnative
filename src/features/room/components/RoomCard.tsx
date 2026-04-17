@@ -1,4 +1,5 @@
-import { Badge, Text } from '@/src/components/ui';
+import { Badge, Card, Text } from '@/src/components/ui';
+import { useTheme } from '@/design';
 import { Pressable, View } from 'react-native';
 import type { Room } from '../types/room.types';
 
@@ -8,18 +9,21 @@ type RoomCardProps = {
 };
 
 export function RoomCard({ room, onPress }: RoomCardProps) {
+  const { colors } = useTheme();
   return (
     <Pressable
       onPress={onPress}
-      className="border border-gray-200 rounded-xl p-4 mb-3 bg-white"
+      style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1, marginBottom: 12 })}
     >
-      <View className="flex-row justify-between items-center mb-2">
-        <Text variant="h3" className="flex-1">{room.name}</Text>
-        <Badge label={`${room.members.length}명`} />
-      </View>
-      <Text variant="caption">
-        멤버: {room.members.map((m) => m.nickname).join(', ')}
-      </Text>
+      <Card variant="outlined">
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+          <Text variant="titleMedium" style={{ flex: 1, marginRight: 8 }}>{room.name}</Text>
+          <Badge label={`${room.members.length}명`} variant="secondary" />
+        </View>
+        <Text variant="bodySmall" color={colors.onSurfaceVariant} numberOfLines={1}>
+          멤버: {room.members.map((m) => m.nickname).join(', ')}
+        </Text>
+      </Card>
     </Pressable>
   );
 }

@@ -6,15 +6,10 @@ type CalendarDotProps = {
 
 export function CalendarDot({ colors }: CalendarDotProps) {
   if (colors.length === 0) return null;
-
   return (
-    <View className="flex-row justify-center gap-0.5 mt-1">
+    <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 2, marginTop: 4 }}>
       {colors.map((color, index) => (
-        <View
-          key={index}
-          className="w-1.5 h-1.5 rounded-full"
-          style={{ backgroundColor: color }}
-        />
+        <View key={index} style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: color }} />
       ))}
     </View>
   );

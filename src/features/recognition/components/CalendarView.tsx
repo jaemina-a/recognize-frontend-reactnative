@@ -1,6 +1,7 @@
-import { Text } from '@/src/components/ui';
-import { Pressable, View } from 'react-native';
+import { IconButton, Text } from '@/src/components/ui';
+import { useTheme } from '@/design';
 import type { RoomMember } from '@/src/features/room/types/room.types';
+import { View } from 'react-native';
 import type { CalendarDay } from '../types/recognition.types';
 import { CalendarDot } from './CalendarDot';
 
@@ -23,20 +24,19 @@ export function CalendarView({
   onPrevMonth,
   onNextMonth,
 }: CalendarViewProps) {
-  // Build a map: date string -> colors
+  const { colors } = useTheme();
+
   const dayMap = new Map<string, string[]>();
   for (const day of days) {
     dayMap.set(day.date, day.recognitions.map((r) => r.color));
   }
 
-  // Calendar grid
   const firstDay = new Date(year, month - 1, 1).getDay();
   const daysInMonth = new Date(year, month, 0).getDate();
 
   const cells: (number | null)[] = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
-  // Fill remaining cells to complete the last row
   while (cells.length % 7 !== 0) cells.push(null);
 
   const rows: (number | null)[][] = [];
@@ -51,52 +51,62 @@ export function CalendarView({
     day === today.getDate();
 
   return (
-    <View className="flex-1">
-      {/* Header */}
-      <View className="flex-row justify-between items-center px-5 py-4">
-        <Pressable onPress={onPrevMonth} className="p-2">
-          <Text className="text-lg">◀</Text>
-        </Pressable>
-        <Text variant="h3">{year}년 {month}월</Text>
-        <Pressable onPress={onNextMonth} className="p-2">
-          <Text className="text-lg">▶</Text>
-        </Pressable>
+    <View style={{ flex: 1 }}>
+      {/* Month navigator */}
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingHorizontal: 20,
+          paddingVertical: 16,
+        }}
+      >
+        <IconButton icon="chevron-left" variant="standard" onPress={onPrevMonth} />
+        <Text variant="titleLarge">{year}년 {month}월</Text>
+        <IconButton icon="chevron-right" variant="standard" onPress={onNextMonth} />
       </View>
 
       {/* Day labels */}
-      <View className="flex-row px-2">
+      <View style={{ flexDirection: 'row', paddingHorizontal: 8 }}>
         {DAY_LABELS.map((label) => (
-          <View key={label} className="flex-1 items-center py-2">
-            <Text variant="caption" className="font-semibold">{label}</Text>
+          <View key={label} style={{ flex: 1, alignItems: 'center', paddingVertical: 8 }}>
+            <Text variant="labelMedium" color={colors.onSurfaceVariant}>{label}</Text>
           </View>
         ))}
       </View>
 
-      {/* Calendar grid */}
+      {/* Grid */}
       {rows.map((row, rowIndex) => (
-        <View key={rowIndex} className="flex-row px-2">
+        <View key={rowIndex} style={{ flexDirection: 'row', paddingHorizontal: 8 }}>
           {row.map((day, colIndex) => {
             const dateStr = day
               ? `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
               : '';
-            const colors = day ? dayMap.get(dateStr) || [] : [];
-
+            const dotColors = day ? dayMap.get(dateStr) || [] : [];
             return (
-              <View key={colIndex} className="flex-1 items-center py-2 min-h-[48px]">
+              <View key={colIndex} style={{ flex: 1, alignItems: 'center', paddingVertical: 8, minHeight: 48 }}>
                 {day !== null && (
                   <>
                     <View
-                      className={`w-8 h-8 rounded-full items-center justify-center ${
-                        isToday(day) ? 'bg-black' : ''
-                      }`}
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 16,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isToday(day) ? colors.primary : 'transparent',
+                      }}
                     >
                       <Text
-                        className={`text-sm ${isToday(day) ? 'text-white font-bold' : ''}`}
+                        variant="bodyMedium"
+                        color={isToday(day) ? colors.onPrimary : colors.onSurface}
+                        style={{ fontWeight: isToday(day) ? '700' : '400' }}
                       >
                         {day}
                       </Text>
                     </View>
-                    <CalendarDot colors={colors} />
+                    <CalendarDot colors={dotColors} />
                   </>
                 )}
               </View>
@@ -106,14 +116,21 @@ export function CalendarView({
       ))}
 
       {/* Legend */}
-      <View className="flex-row flex-wrap px-5 py-4 border-t border-gray-200 mt-2">
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          paddingHorizontal: 20,
+          paddingVertical: 16,
+          borderTopWidth: 1,
+          borderTopColor: colors.outlineVariant,
+          marginTop: 8,
+        }}
+      >
         {members.map((member) => (
-          <View key={member.userId} className="flex-row items-center mr-4 mb-2">
-            <View
-              className="w-3 h-3 rounded-full mr-1.5"
-              style={{ backgroundColor: member.color }}
-            />
-            <Text variant="caption">{member.nickname}</Text>
+          <View key={member.userId} style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16, marginBottom: 8 }}>
+            <View style={{ width: 10, height: 10, borderRadius: 5, marginRight: 6, backgroundColor: member.color }} />
+            <Text variant="bodySmall" color={colors.onSurfaceVariant}>{member.nickname}</Text>
           </View>
         ))}
       </View>

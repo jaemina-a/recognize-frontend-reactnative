@@ -1,3 +1,4 @@
+import { elevation, shape, useTheme } from '@/design';
 import { Pressable, Modal as RNModal, View, type ModalProps as RNModalProps } from 'react-native';
 import { Text } from './Text';
 
@@ -7,15 +8,35 @@ type ModalProps = RNModalProps & {
 };
 
 export function Modal({ title, onClose, children, ...props }: ModalProps) {
+  const { colors } = useTheme();
   return (
     <RNModal transparent animationType="fade" {...props}>
-      <View className="flex-1 bg-black/50 justify-center items-center px-6">
-        <View className="bg-white rounded-2xl w-full p-5">
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.32)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingHorizontal: 24,
+        }}
+      >
+        <View
+          style={[
+            {
+              backgroundColor: colors.surfaceContainerHigh,
+              borderRadius: shape.extraLarge,
+              padding: 24,
+              width: '100%',
+              maxWidth: 560,
+            },
+            elevation(3),
+          ]}
+        >
           {title && (
-            <View className="flex-row justify-between items-center mb-4">
-              <Text variant="h3">{title}</Text>
-              <Pressable onPress={onClose}>
-                <Text className="text-2xl text-gray-500">✕</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <Text variant="titleLarge">{title}</Text>
+              <Pressable onPress={onClose} hitSlop={10}>
+                <Text style={{ fontSize: 22, color: colors.onSurfaceVariant }}>✕</Text>
               </Pressable>
             </View>
           )}

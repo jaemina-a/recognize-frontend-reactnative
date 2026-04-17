@@ -1,5 +1,6 @@
 import { ScreenContainer } from '@/src/components/layout';
-import { Button, Text } from '@/src/components/ui';
+import { Button, Divider, Text } from '@/src/components/ui';
+import { useTheme } from '@/design';
 import { Alert, View } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 import { LoginHeader } from './LoginHeader';
@@ -9,6 +10,7 @@ const MOCK_USERS = ['재민', '아란', '흥희', '은순'] as const;
 
 export function LoginScreen() {
   const { isLoading, loginWithKakao, loginWithMock } = useAuth();
+  const { colors } = useTheme();
 
   const handleKakaoLogin = async () => {
     try {
@@ -34,26 +36,24 @@ export function LoginScreen() {
 
   return (
     <ScreenContainer>
-      <View className="flex-1 justify-center px-6">
+      <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 24 }}>
         <LoginHeader />
         <View>
-          <SocialLoginButton
-            provider="kakao"
-            onPress={handleKakaoLogin}
-            disabled={isLoading}
-          />
+          <SocialLoginButton provider="kakao" onPress={handleKakaoLogin} disabled={isLoading} />
           <SocialLoginButton provider="google" onPress={handleGoogleLogin} />
         </View>
 
-        <View className="mt-8">
-          <View className="flex-row items-center mb-4">
-            <View className="flex-1 h-px bg-gray-300" />
-            <Text variant="caption" className="mx-3">테스트 계정</Text>
-            <View className="flex-1 h-px bg-gray-300" />
+        <View style={{ marginTop: 32 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+            <View style={{ flex: 1 }}><Divider /></View>
+            <Text variant="labelMedium" color={colors.onSurfaceVariant} style={{ marginHorizontal: 12 }}>
+              테스트 계정
+            </Text>
+            <View style={{ flex: 1 }}><Divider /></View>
           </View>
-          <View className="flex-row flex-wrap gap-3">
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
             {MOCK_USERS.map((name) => (
-              <View key={name} className="flex-1 min-w-[45%]">
+              <View key={name} style={{ flexBasis: '47%', flexGrow: 1 }}>
                 <Button
                   title={`${name}으로 로그인`}
                   variant="outlined"

@@ -1,7 +1,6 @@
 import { ScreenContainer } from '@/src/components/layout';
 import { Button } from '@/src/components/ui';
 import { RecognitionFeed } from '@/src/features/recognition/components/RecognitionFeed';
-import { ScoreBoard } from '@/src/features/recognition/components/ScoreBoard';
 import { RoomHeader } from '@/src/features/room/components/RoomHeader';
 import { useRoom } from '@/src/features/room/hooks/useRoom';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -13,7 +12,6 @@ export default function RoomScreen() {
   const router = useRouter();
   const { room, refetch: refetchRoom } = useRoom(id);
 
-  // 화면 포커스 시 방 정보(점수 등) 새로고침
   useFocusEffect(
     useCallback(() => {
       refetchRoom();
@@ -24,16 +22,14 @@ export default function RoomScreen() {
     <ScreenContainer>
       <RoomHeader roomName={room.name} roomId={id} />
 
-      {/* 카드 피드 */}
-      <RecognitionFeed roomId={id} onRecognized={refetchRoom} />
+      {/* 카드 피드 (오늘의 랭킹 제거, 빈 멤버 카드 포함) */}
+      <RecognitionFeed roomId={id} onRecognized={refetchRoom} members={room.members} />
 
-      {/* 점수 보드 */}
-      <ScoreBoard members={room.members} />
-
-      {/* 업로드 버튼 */}
-      <View className="px-5 pb-4">
+      {/* 업로드 버튼 — "인증하기" */}
+      <View style={{ paddingHorizontal: 20, paddingBottom: 16, paddingTop: 8 }}>
         <Button
-          title="📸 갓생 인증하기"
+          title="인증하기"
+          size="lg"
           onPress={() => router.push(`/room/${id}/upload` as any)}
         />
       </View>

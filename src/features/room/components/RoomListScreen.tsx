@@ -1,50 +1,101 @@
 import { ScreenContainer } from '@/src/components/layout';
-import { Button, Text } from '@/src/components/ui';
+import { Avatar, Card, DropdownMenu, IconButton, Text, type DropdownMenuItem } from '@/src/components/ui';
+import { useTheme } from '@/design';
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
+import { useAuthStore } from '@/src/stores/authStore';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback } from 'react';
-import { FlatList, View } from 'react-native';
+import { useCallback, useState } from 'react';
+import { Alert, FlatList, Pressable, View } from 'react-native';
 import { useRoomList } from '../hooks/useRoomList';
 import { RoomCard } from './RoomCard';
 
 export function RoomListScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { rooms, refetch } = useRoomList();
   const { logout } = useAuth();
+  const user = useAuthStore((s) => s.user);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // 화면에 포커스될 때마다 목록 새로고침 (방 만들기/뒤로가기 후 반영)
   useFocusEffect(
     useCallback(() => {
       refetch();
     }, [refetch]),
   );
 
+  const menuItems: DropdownMenuItem[] = [
+    {
+      label: '프로필',
+      icon: 'account-outline',
+      onPress: () => Alert.alert('준비 중', '프로필 화면은 준비 중입니다.'),
+    },
+    {
+      label: '설정',
+      icon: 'cog-outline',
+      onPress: () => Alert.alert('준비 중', '설정 화면은 준비 중입니다.'),
+    },
+    {
+      label: '로그아웃',
+      icon: 'logout',
+      destructive: true,
+      onPress: logout,
+    },
+  ];
+
   return (
     <ScreenContainer>
-      <View className="flex-1 px-5 pt-4">
-        {/* 헤더 */}
-        <View className="flex-row justify-between items-center mb-6">
-          <Text variant="h1">내 방</Text>
-          <View className="flex-row gap-2">
-            <Button
-              title="로그아웃"
-              size="sm"
-              variant="outlined"
-              onPress={logout}
-            />
-            <Button
-              title="+ 방 만들기"
-              size="sm"
-              onPress={() => router.push('/(main)/create-room' as any)}
-            />
-          </View>
+      <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 12 }}>
+        {/* App bar */}
+        <View
+          style={{
+            height: 56,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 12,
+          }}
+        >
+          <Avatar
+            name={user?.nickname ?? '?'}
+            size={40}
+            onPress={() => Alert.alert('준비 중', '프로필 화면은 준비 중입니다.')}
+          />
+          <Text variant="titleLarge" color={colors.primary} style={{ fontWeight: '700' }}>
+            recognizer
+          </Text>
+          <IconButton
+            icon="dots-vertical"
+            variant="standard"
+            onPress={() => setMenuOpen(true)}
+          />
         </View>
 
-        {/* 방 목록 */}
+        {/* Room list with "+ 새 방 만들기" card pinned at top */}
         <FlatList
-          className="flex-1"
+          style={{ flex: 1 }}
           data={rooms}
           keyExtractor={(item) => item.id}
+          ListHeaderComponent={
+            <Pressable
+              onPress={() => router.push('/(main)/create-room' as any)}
+              style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1, marginBottom: 12 })}
+            >
+              <Card variant="filled" padding={16} style={{ backgroundColor: colors.primaryContainer }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <MaterialCommunityIcons name="plus-circle-outline" size={28} color={colors.onPrimaryContainer} />
+                  <View style={{ marginLeft: 12, flex: 1 }}>
+                    <Text variant="titleMedium" color={colors.onPrimaryContainer}>
+                      새 방 만들기
+                    </Text>
+                    <Text variant="bodySmall" color={colors.onPrimaryContainer} style={{ opacity: 0.8 }}>
+                      친구들과 함께할 방을 만들어보세요
+                    </Text>
+                  </View>
+                </View>
+              </Card>
+            </Pressable>
+          }
           renderItem={({ item }) => (
             <RoomCard
               room={item}
@@ -52,22 +103,47 @@ export function RoomListScreen() {
             />
           )}
           ListEmptyComponent={
-            <View className="flex-1 items-center justify-center py-20">
-              <Text variant="caption">아직 참여한 방이 없어요</Text>
-              <Text variant="caption">방을 만들거나 초대코드로 참가해보세요!</Text>
+            <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 48 }}>
+              <Text variant="bodyMedium" color={colors.onSurfaceVariant}>아직 참여한 방이 없어요</Text>
+              <Text variant="bodySmall" color={colors.onSurfaceVariant} style={{ marginTop: 4 }}>
+                방을 만들거나 초대코드로 참가해보세요!
+              </Text>
             </View>
           }
         />
 
-        {/* 초대코드 참가 */}
-        <View className="pb-4">
-          <Button
-            title="초대코드로 참가"
-            variant="outlined"
+        {/* 초대코드 참가 (outlined, bottom) */}
+        <View style={{ paddingBottom: 16, paddingTop: 8 }}>
+          <Pressable
             onPress={() => router.push('/room/join' as any)}
-          />
+            style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderWidth: 1,
+                borderColor: colors.outline,
+                borderRadius: 9999,
+                paddingVertical: 14,
+              }}
+            >
+              <MaterialCommunityIcons name="ticket-confirmation-outline" size={20} color={colors.primary} />
+              <Text variant="labelLarge" color={colors.primary} style={{ marginLeft: 8 }}>
+                초대코드로 참가
+              </Text>
+            </View>
+          </Pressable>
         </View>
       </View>
+
+      <DropdownMenu
+        visible={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        items={menuItems}
+        anchor={{ top: 72, right: 20 }}
+      />
     </ScreenContainer>
   );
 }
