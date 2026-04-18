@@ -1,6 +1,6 @@
-﻿import { ScreenContainer } from '@/src/components/layout';
+import { motion, useTheme } from '@/design';
+import { ScreenContainer } from '@/src/components/layout';
 import { Avatar, DropdownMenu, IconButton, Text, type DropdownMenuItem } from '@/src/components/ui';
-import { useTheme } from '@/design';
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
 import {
   CreateRoomSheet,
@@ -8,17 +8,17 @@ import {
   JoinRoomSheet,
   ProfileDrawer,
 } from '@/src/features/main/components';
+import { DRAWER_WIDTH } from '@/src/features/main/components/ProfileDrawer';
 import { useAuthStore } from '@/src/stores/authStore';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { runOnJS } from 'react-native-reanimated';
+import { runOnJS, useSharedValue, withSpring, ReduceMotion } from 'react-native-reanimated';
 import { useRoomList } from '../hooks/useRoomList';
 import { RoomCard } from './RoomCard';
 
-const DRAWER_OPEN_TRANSLATE_THRESHOLD = 60;
-const DRAWER_OPEN_VELOCITY_THRESHOLD = 300;
+const OPEN_VELOCITY_THRESHOLD = 500;
 
 export function RoomListScreen() {
   const router = useRouter();
@@ -27,10 +27,12 @@ export function RoomListScreen() {
   const { logout } = useAuth();
   const user = useAuthStore((s) => s.user);
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerRendered, setDrawerRendered] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const [createSheetOpen, setCreateSheetOpen] = useState(false);
   const [joinSheetOpen, setJoinSheetOpen] = useState(false);
+
+  const drawerProgress = useSharedValue(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -51,18 +53,37 @@ export function RoomListScreen() {
     },
   ];
 
-  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const openDrawer = useCallback(() => {
+    setDrawerRendered(true);
+    drawerProgress.value = withSpring(1, { ...motion.spatialDefault, reduceMotion: ReduceMotion.Never });
+  }, [drawerProgress]);
 
-  // 화면 좌→우 스와이프로 드로어 열기.
-  // activeOffsetX로 수평 임계값을 두어 FlatList의 수직 스크롤과 충돌 방지.
+  const closeDrawer = useCallback(() => {
+    drawerProgress.value = withSpring(0, { ...motion.spatialFast, reduceMotion: ReduceMotion.Never }, (finished) => {
+      if (finished) runOnJS(setDrawerRendered)(false);
+    });
+  }, [drawerProgress]);
+
+  const setRendered = useCallback((v: boolean) => setDrawerRendered(v), []);
+
   const openDrawerGesture = Gesture.Pan()
     .activeOffsetX([-15, 15])
+    .onStart(() => {
+      runOnJS(setRendered)(true);
+    })
+    .onUpdate((e) => {
+      const next = Math.min(1, Math.max(0, e.translationX / DRAWER_WIDTH));
+      drawerProgress.value = next;
+    })
     .onEnd((e) => {
-      if (
-        e.translationX > DRAWER_OPEN_TRANSLATE_THRESHOLD &&
-        e.velocityX > DRAWER_OPEN_VELOCITY_THRESHOLD
-      ) {
-        runOnJS(openDrawer)();
+      const shouldOpen =
+        e.translationX > DRAWER_WIDTH * 0.4 || e.velocityX > OPEN_VELOCITY_THRESHOLD;
+      if (shouldOpen) {
+        drawerProgress.value = withSpring(1, { ...motion.spatialDefault, reduceMotion: ReduceMotion.Never });
+      } else {
+        drawerProgress.value = withSpring(0, { ...motion.spatialFast, reduceMotion: ReduceMotion.Never }, (finished) => {
+          if (finished) runOnJS(setRendered)(false);
+        });
       }
     });
 
@@ -70,7 +91,6 @@ export function RoomListScreen() {
     <ScreenContainer>
       <GestureDetector gesture={openDrawerGesture}>
         <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 12 }}>
-          {/* App bar */}
           <View
             style={{
               height: 56,
@@ -83,7 +103,7 @@ export function RoomListScreen() {
             <Avatar
               name={user?.nickname ?? '?'}
               size={40}
-              onPress={() => setDrawerOpen(true)}
+              onPress={openDrawer}
             />
             <Text variant="titleLarge" color={colors.primary} style={{ fontWeight: '700' }}>
               recognizer
@@ -95,7 +115,6 @@ export function RoomListScreen() {
             />
           </View>
 
-          {/* 본문: 방 0개면 빈 상태 UI, 아니면 FlatList */}
           {rooms.length === 0 ? (
             <EmptyRoomActions
               onJoin={() => setJoinSheetOpen(true)}
@@ -116,7 +135,6 @@ export function RoomListScreen() {
         </View>
       </GestureDetector>
 
-      {/* + 메뉴: 방 만들기 / 방 참가하기 */}
       <DropdownMenu
         visible={addMenuOpen}
         onClose={() => setAddMenuOpen(false)}
@@ -124,15 +142,14 @@ export function RoomListScreen() {
         anchor={{ top: 72, right: 20 }}
       />
 
-      {/* 좌측 슬라이드 드로어 (프로필 + 로그아웃) */}
       <ProfileDrawer
-        visible={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        rendered={drawerRendered}
+        progress={drawerProgress}
+        onClose={closeDrawer}
         user={user}
         onLogout={logout}
       />
 
-      {/* 방 만들기 / 참가 BottomSheet */}
       <CreateRoomSheet visible={createSheetOpen} onClose={() => setCreateSheetOpen(false)} />
       <JoinRoomSheet visible={joinSheetOpen} onClose={() => setJoinSheetOpen(false)} />
     </ScreenContainer>
