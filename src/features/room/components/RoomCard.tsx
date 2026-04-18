@@ -16,7 +16,7 @@ export function RoomCard({ room, onPress }: RoomCardProps) {
       cssInterop={false}
       style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
     >
-      <Card variant="outlined">
+      <Card>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <Text variant="titleMedium" style={{ flex: 1, marginRight: 8 }}>{room.name}</Text>
         </View>

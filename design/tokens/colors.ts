@@ -1,5 +1,6 @@
-// Material Design 3 Baseline Color Scheme
-// Source color: #6750A4 (M3 Baseline Purple)
+// Material Design 3 Color Scheme
+// Source color: #1B6EF3 (Sky Blue — "하늘을 여유있게 바라볼 날이 올것이라는 희망")
+// Neutrals: pure achromatic gray (chroma=0, 보라 틴트 없음) — 사진이 포인트가 되도록
 // https://m3.material.io/styles/color/roles
 
 export type ColorScheme = {
@@ -39,78 +40,130 @@ export type ColorScheme = {
   inversePrimary: string;
 };
 
+// ─── Primary Tonal Palette (H=217, C=80) ───────────────────────────
+// P10:#001944  P20:#002D7A  P30:#0043B2  P40:#1B5EE8
+// P80:#A8C8FF  P90:#D6E5FF  P95:#EBF2FF  P99:#FAFCFF
+
+// ─── Secondary Tonal Palette (H=217, C=20) ──────────────────────────
+// S10:#0F1B31  S20:#1E3157  S30:#2F4A7E  S40:#4264A5
+// S80:#AABFDF  S90:#D0DDEF  S95:#E6EEF8
+
+// ─── Tertiary Tonal Palette (H=190, C=25 — 청록, 하늘+바다) ─────────
+// T10:#001F28  T20:#00374A  T30:#00516E  T40:#006C93
+// T80:#7ACFEE  T90:#C0E9F7  T95:#E0F4FB
+
+// ─── Neutral Tonal Palette (chroma=0, pure achromatic gray) ─────────
+// N0:#000000   N4:#0A0A0A   N6:#0F0F0F   N10:#1A1A1A
+// N12:#1F1F1F  N17:#2B2B2B  N20:#333333  N22:#383838
+// N24:#3D3D3D  N25:#404040  N30:#4D4D4D  N40:#666666
+// N50:#808080  N60:#999999  N70:#B3B3B3  N80:#CCCCCC
+// N87:#DEDEDE  N90:#E5E5E5  N92:#EBEBEB  N94:#F0F0F0
+// N96:#F5F5F5  N98:#FAFAFA  N99:#FCFCFC  N100:#FFFFFF
+
+// ─── NeutralVariant Tonal Palette (H=217, C=6 — 극미 파란 틴트) ────
+// NV10:#161B24 NV20:#2B3040 NV30:#42485B NV40:#596072
+// NV50:#737B8E NV60:#8D95A8 NV70:#A8AFC2 NV80:#C4CADD NV90:#E0E4F0
+
 export const lightColorScheme: ColorScheme = {
-  primary: '#6750A4',
+  // Primary — blue P40
+  primary: '#1B5EE8',
   onPrimary: '#FFFFFF',
-  primaryContainer: '#EADDFF',
-  onPrimaryContainer: '#21005D',
-  secondary: '#625B71',
+  primaryContainer: '#D6E5FF',      // P90
+  onPrimaryContainer: '#001944',    // P10
+
+  // Secondary — muted blue S40
+  secondary: '#4264A5',
   onSecondary: '#FFFFFF',
-  secondaryContainer: '#E8DEF8',
-  onSecondaryContainer: '#1D192B',
-  tertiary: '#7D5260',
+  secondaryContainer: '#D0DDEF',    // S90
+  onSecondaryContainer: '#0F1B31',  // S10
+
+  // Tertiary — sky teal T40
+  tertiary: '#006C93',
   onTertiary: '#FFFFFF',
-  tertiaryContainer: '#FFD8E4',
-  onTertiaryContainer: '#31111D',
-  error: '#B3261E',
+  tertiaryContainer: '#C0E9F7',     // T90
+  onTertiaryContainer: '#001F28',   // T10
+
+  // Error
+  error: '#BA1A1A',
   onError: '#FFFFFF',
-  errorContainer: '#F9DEDC',
-  onErrorContainer: '#410E0B',
-  background: '#FEF7FF',
-  onBackground: '#1D1B20',
-  surface: '#FEF7FF',
-  onSurface: '#1D1B20',
-  surfaceVariant: '#E7E0EC',
-  onSurfaceVariant: '#49454F',
-  surfaceContainerLowest: '#FFFFFF',
-  surfaceContainerLow: '#F7F2FA',
-  surfaceContainer: '#F3EDF7',
-  surfaceContainerHigh: '#ECE6F0',
-  surfaceContainerHighest: '#E6E0E9',
-  outline: '#79747E',
-  outlineVariant: '#CAC4D0',
+  errorContainer: '#FFDAD6',
+  onErrorContainer: '#410002',
+
+  // Background & Surface — pure gray N99
+  background: '#FCFCFC',            // N99
+  onBackground: '#1A1A1A',          // N10
+  surface: '#FCFCFC',               // N99
+  onSurface: '#1A1A1A',             // N10
+  surfaceVariant: '#E0E4F0',        // NV90 (barely-tinted variant)
+  onSurfaceVariant: '#42485B',      // NV30
+
+  // Surface containers — pure gray
+  surfaceContainerLowest: '#FFFFFF',  // N100
+  surfaceContainerLow: '#F5F5F5',     // N96
+  surfaceContainer: '#F0F0F0',        // N94
+  surfaceContainerHigh: '#EBEBEB',    // N92
+  surfaceContainerHighest: '#E5E5E5', // N90
+
+  outline: '#737B8E',               // NV50
+  outlineVariant: '#C4CADD',        // NV80
+
   scrim: '#000000',
   shadow: '#000000',
-  inverseSurface: '#322F35',
-  inverseOnSurface: '#F5EFF7',
-  inversePrimary: '#D0BCFF',
+
+  inverseSurface: '#333333',        // N20
+  inverseOnSurface: '#F5F5F5',      // N96
+  inversePrimary: '#A8C8FF',        // P80
 };
 
 export const darkColorScheme: ColorScheme = {
-  primary: '#D0BCFF',
-  onPrimary: '#381E72',
-  primaryContainer: '#4F378B',
-  onPrimaryContainer: '#EADDFF',
-  secondary: '#CCC2DC',
-  onSecondary: '#332D41',
-  secondaryContainer: '#4A4458',
-  onSecondaryContainer: '#E8DEF8',
-  tertiary: '#EFB8C8',
-  onTertiary: '#492532',
-  tertiaryContainer: '#633B48',
-  onTertiaryContainer: '#FFD8E4',
-  error: '#F2B8B5',
-  onError: '#601410',
-  errorContainer: '#8C1D18',
-  onErrorContainer: '#F9DEDC',
-  background: '#141218',
-  onBackground: '#E6E0E9',
-  surface: '#141218',
-  onSurface: '#E6E0E9',
-  surfaceVariant: '#49454F',
-  onSurfaceVariant: '#CAC4D0',
-  surfaceContainerLowest: '#0F0D13',
-  surfaceContainerLow: '#1D1B20',
-  surfaceContainer: '#211F26',
-  surfaceContainerHigh: '#2B2930',
-  surfaceContainerHighest: '#36343B',
-  outline: '#938F99',
-  outlineVariant: '#49454F',
+  // Primary — blue P80 (밝은 파랑, 검정 배경 위에서 가독성 확보)
+  primary: '#A8C8FF',               // P80
+  onPrimary: '#002D7A',             // P20
+  primaryContainer: '#0043B2',      // P30
+  onPrimaryContainer: '#D6E5FF',    // P90
+
+  // Secondary — muted blue S80
+  secondary: '#AABFDF',             // S80
+  onSecondary: '#1E3157',           // S20
+  secondaryContainer: '#2F4A7E',    // S30
+  onSecondaryContainer: '#D0DDEF',  // S90
+
+  // Tertiary — sky teal T80
+  tertiary: '#7ACFEE',              // T80
+  onTertiary: '#00374A',            // T20
+  tertiaryContainer: '#00516E',     // T30
+  onTertiaryContainer: '#C0E9F7',   // T90
+
+  // Error
+  error: '#FFB4AB',
+  onError: '#690005',
+  errorContainer: '#93000A',
+  onErrorContainer: '#FFDAD6',
+
+  // Background & Surface — true black base (사진이 돋보이도록)
+  background: '#0A0A0A',            // N4
+  onBackground: '#E5E5E5',          // N90
+  surface: '#0A0A0A',               // N4
+  onSurface: '#E5E5E5',             // N90
+  surfaceVariant: '#2B3040',        // NV20 (극미 파란 틴트로 depth 부여)
+  onSurfaceVariant: '#C4CADD',      // NV80
+
+  // Surface containers — 검정에서 단계별 회색 (사진 카드가 떠 보이는 효과)
+  surfaceContainerLowest: '#000000',  // N0
+  surfaceContainerLow: '#1A1A1A',     // N10
+  surfaceContainer: '#1F1F1F',        // N12
+  surfaceContainerHigh: '#2B2B2B',    // N17
+  surfaceContainerHighest: '#333333', // N20
+
+  outline: '#808080',               // N50 (순수 중간 회색)
+  outlineVariant: '#3D3D3D',        // N24 (구분선, 거의 안 보이게)
+
   scrim: '#000000',
   shadow: '#000000',
-  inverseSurface: '#E6E0E9',
-  inverseOnSurface: '#322F35',
-  inversePrimary: '#6750A4',
+
+  inverseSurface: '#E5E5E5',        // N90
+  inverseOnSurface: '#1A1A1A',      // N10
+  inversePrimary: '#1B5EE8',        // P40
 };
 
 // Legacy palette (backward-compat for any non-themed spots)

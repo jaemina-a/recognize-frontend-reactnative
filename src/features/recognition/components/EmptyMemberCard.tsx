@@ -14,14 +14,12 @@ export function EmptyMemberCard({ nickname, color }: EmptyMemberCardProps) {
   return (
     <View style={{ marginBottom: 16 }}>
       <Card
-        variant="outlined"
         padding={0}
         style={{
           height: 192,
           alignItems: 'center',
           justifyContent: 'center',
           // Android에서는 borderRadius와 dashed border가 호환되지 않아 solid로 fallback
-          borderStyle: Platform.OS === 'android' ? 'solid' : 'dashed',
           borderColor: colors.outlineVariant,
         }}
       >

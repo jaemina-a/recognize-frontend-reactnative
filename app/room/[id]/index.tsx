@@ -31,7 +31,7 @@ export default function RoomScreen() {
         onSettingsPress={() => setIsSettingsOpen(true)}
       />
 
-      {/* 카드 피드 (오늘의 랭킹 제거, 빈 멤버 카드 포함) */}
+      {/* 카드 피드 */}
       <RecognitionFeed roomId={id} onRecognized={refetchRoom} members={room.members} />
 
       {/* 업로드 버튼 — "인증하기" */}
