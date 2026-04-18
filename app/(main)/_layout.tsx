@@ -16,10 +16,6 @@ export default function MainLayout() {
       }}
     >
       <Stack.Screen name="index" />
-      <Stack.Screen
-        name="create-room"
-        options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
-      />
     </Stack>
   );
 }

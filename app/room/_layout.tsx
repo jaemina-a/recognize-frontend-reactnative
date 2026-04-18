@@ -9,7 +9,6 @@ export default function RoomLayout() {
         animationDuration: 250,
       }}
     >
-      <Stack.Screen name="join" />
       <Stack.Screen name="[id]" />
     </Stack>
   );
