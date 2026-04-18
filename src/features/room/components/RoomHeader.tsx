@@ -22,8 +22,6 @@ export function RoomHeader({ roomName, onCalendarPress, onSettingsPress }: RoomH
         justifyContent: 'space-between',
         paddingHorizontal: 12,
         paddingVertical: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.outlineVariant,
         backgroundColor: colors.surface,
       }}
     >

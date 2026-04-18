@@ -47,6 +47,7 @@ export function IconButton({
     <Pressable
       accessibilityRole="button"
       disabled={disabled}
+      cssInterop={false}
       style={({ pressed }) => ({
         width: size,
         height: size,

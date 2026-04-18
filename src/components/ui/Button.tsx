@@ -1,4 +1,4 @@
-import { elevation, shape, useTheme } from '@/design';
+import { elevation, useTheme } from '@/design';
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View, type PressableProps } from 'react-native';
 
@@ -57,20 +57,21 @@ export function Button({
     <Pressable
       disabled={disabled}
       accessibilityRole="button"
-      className={className}
+      cssInterop={false}
       style={({ pressed }) => [
         styles.base,
         {
           backgroundColor: variantStyle.bg,
           borderColor: variantStyle.border,
           borderWidth: variant === 'outlined' ? 1 : 0,
-          borderRadius: shape.full,
+          // Android Fabric에서 borderRadius:9999가 누락되는 사례가 있어 minHeight 절반으로 pill 효과
+          borderRadius: sizeStyle.minHeight / 2,
           paddingVertical: sizeStyle.paddingVertical,
           paddingHorizontal: sizeStyle.paddingHorizontal,
           minHeight: sizeStyle.minHeight,
-          opacity: disabled ? 0.38 : pressed ? 0.88 : 1,
         },
         variantStyle.elev > 0 && elevation(variantStyle.elev),
+        { opacity: disabled ? 0.38 : pressed ? 0.88 : 1 },
       ]}
       {...props}
     >

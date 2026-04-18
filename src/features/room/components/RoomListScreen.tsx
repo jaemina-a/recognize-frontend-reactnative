@@ -74,27 +74,29 @@ export function RoomListScreen() {
         {/* Room list with "+ 새 방 만들기" card pinned at top */}
         <FlatList
           style={{ flex: 1 }}
+          contentContainerStyle={{ paddingBottom: 12 }}
           data={rooms}
           keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
           ListHeaderComponent={
-            <Pressable
-              onPress={() => router.push('/(main)/create-room' as any)}
-              style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1, marginBottom: 12 })}
-            >
-              <Card variant="filled" padding={16} style={{ backgroundColor: colors.primaryContainer }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <MaterialCommunityIcons name="plus-circle-outline" size={28} color={colors.onPrimaryContainer} />
-                  <View style={{ marginLeft: 12, flex: 1 }}>
-                    <Text variant="titleMedium" color={colors.onPrimaryContainer}>
-                      새 방 만들기
-                    </Text>
-                    <Text variant="bodySmall" color={colors.onPrimaryContainer} style={{ opacity: 0.8 }}>
-                      친구들과 함께할 방을 만들어보세요
-                    </Text>
+            <View style={{ marginBottom: 12 }}>
+              <Pressable
+                onPress={() => router.push('/(main)/create-room' as any)}
+                cssInterop={false}
+                style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
+              >
+                <Card variant="filled" padding={16} style={{ backgroundColor: colors.primaryContainer }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <MaterialCommunityIcons name="plus-circle-outline" size={28} color={colors.onPrimaryContainer} />
+                    <View style={{ marginLeft: 12, flex: 1 }}>
+                      <Text variant="titleMedium" color={colors.onPrimaryContainer}>
+                        새 방 만들기
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              </Card>
-            </Pressable>
+                </Card>
+              </Pressable>
+            </View>
           }
           renderItem={({ item }) => (
             <RoomCard
@@ -116,6 +118,7 @@ export function RoomListScreen() {
         <View style={{ paddingBottom: 16, paddingTop: 8 }}>
           <Pressable
             onPress={() => router.push('/room/join' as any)}
+            cssInterop={false}
             style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
           >
             <View

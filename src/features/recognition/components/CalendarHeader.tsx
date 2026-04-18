@@ -42,6 +42,7 @@ export function CalendarHeader({
       <Pressable
         onPress={onTogglePicker}
         hitSlop={8}
+        cssInterop={false}
         style={({ pressed }) => ({
           flexDirection: 'row',
           alignItems: 'center',

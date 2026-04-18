@@ -18,7 +18,7 @@ export function Card({ variant = 'elevated', padding = 16, style, ...props }: Ca
       case 'filled':
         return { backgroundColor: colors.surfaceContainerHighest, borderWidth: 0, borderColor: 'transparent', elev: 0 as const };
       case 'outlined':
-        return { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, elev: 0 as const };
+        return { backgroundColor: colors.surfaceContainerHigh, borderWidth: 1, borderColor: colors.outlineVariant, elev: 0 as const };
       case 'elevated':
       default:
         return { backgroundColor: colors.surfaceContainerLow, borderWidth: 0, borderColor: 'transparent', elev: 1 as const };

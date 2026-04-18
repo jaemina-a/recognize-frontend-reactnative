@@ -13,15 +13,15 @@ export function RoomCard({ room, onPress }: RoomCardProps) {
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1, marginBottom: 12 })}
+      cssInterop={false}
+      style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
     >
       <Card variant="outlined">
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <Text variant="titleMedium" style={{ flex: 1, marginRight: 8 }}>{room.name}</Text>
-          <Badge label={`${room.members.length}명`} variant="secondary" />
         </View>
         <Text variant="bodySmall" color={colors.onSurfaceVariant} numberOfLines={1}>
-          멤버: {room.members.map((m) => m.nickname).join(', ')}
+          {room.members.map((m) => m.nickname).join(', ')}
         </Text>
       </Card>
     </Pressable>

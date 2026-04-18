@@ -5,7 +5,7 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, Platform, View } from 'react-native';
 import { usePhotoUpload } from '../hooks/usePhotoUpload';
 import { useRecognitionFeed } from '../hooks/useRecognitionFeed';
 import { useAuthStore } from '@/src/stores/authStore';
@@ -72,7 +72,8 @@ export function PhotoUploadScreen() {
             marginTop: 16,
             backgroundColor: colors.surfaceContainerHigh,
             borderWidth: 2,
-            borderStyle: 'dashed',
+            // Android에서는 borderRadius와 dashed border가 호환되지 않아 solid로 fallback
+            borderStyle: Platform.OS === 'android' ? 'solid' : 'dashed',
             borderColor: colors.outlineVariant,
             borderRadius: shape.large,
             height: 288,

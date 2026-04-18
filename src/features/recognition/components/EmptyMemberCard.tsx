@@ -1,7 +1,7 @@
 import { Card, Text } from '@/src/components/ui';
 import { useTheme } from '@/design';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 type EmptyMemberCardProps = {
   nickname: string;
@@ -20,11 +20,12 @@ export function EmptyMemberCard({ nickname, color }: EmptyMemberCardProps) {
           height: 192,
           alignItems: 'center',
           justifyContent: 'center',
-          borderStyle: 'dashed',
+          // Android에서는 borderRadius와 dashed border가 호환되지 않아 solid로 fallback
+          borderStyle: Platform.OS === 'android' ? 'solid' : 'dashed',
           borderColor: colors.outlineVariant,
         }}
       >
-        <MaterialCommunityIcons name="camera-off-outline" size={36} color={colors.onSurfaceVariant} />
+        <MaterialCommunityIcons name="camera-outline" size={36} color={colors.onSurfaceVariant} />
         <Text variant="bodyMedium" color={colors.onSurfaceVariant} style={{ marginTop: 8 }}>
           아직 인증하지 않았어요
         </Text>

@@ -51,9 +51,9 @@ export function LoginScreen() {
             </Text>
             <View style={{ flex: 1 }}><Divider /></View>
           </View>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -6 }}>
             {MOCK_USERS.map((name) => (
-              <View key={name} style={{ flexBasis: '47%', flexGrow: 1 }}>
+              <View key={name} style={{ width: '50%', paddingHorizontal: 6, marginBottom: 12 }}>
                 <Button
                   title={`${name}으로 로그인`}
                   variant="outlined"

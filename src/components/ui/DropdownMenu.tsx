@@ -54,6 +54,7 @@ export function DropdownMenu({ visible, onClose, items, anchor }: DropdownMenuPr
                   // defer to next tick so modal can close cleanly
                   setTimeout(item.onPress, 0);
                 }}
+                cssInterop={false}
                 style={({ pressed }) => ({
                   flexDirection: 'row',
                   alignItems: 'center',

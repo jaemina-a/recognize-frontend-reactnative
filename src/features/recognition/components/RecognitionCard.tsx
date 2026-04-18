@@ -33,7 +33,16 @@ export function RecognitionCard({ recognition, onRecognize, isOwnPhoto }: Recogn
             contentFit="cover"
           />
         ) : (
-          <View style={{ position: 'absolute', inset: 0, backgroundColor: colors.surfaceContainerHighest } as any} />
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              backgroundColor: colors.surfaceContainerHighest,
+            }}
+          />
         )}
 
         <View
@@ -70,6 +79,7 @@ export function RecognitionCard({ recognition, onRecognize, isOwnPhoto }: Recogn
         ) : !isOwnPhoto ? (
           <Pressable
             onPress={onRecognize}
+            cssInterop={false}
             style={({ pressed }) => ({
               backgroundColor: colors.primary,
               borderRadius: shape.full,
