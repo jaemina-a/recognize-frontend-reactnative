@@ -17,4 +17,9 @@ export const ENDPOINTS = {
   PHOTOS: (roomId: string) => `/rooms/${roomId}/photos`,
   RECOGNIZE: (photoId: string) => `/photos/${photoId}/recognize`,
   CALENDAR: (roomId: string) => `/rooms/${roomId}/calendar`,
+
+  // Chat
+  CHAT_ROOM: (roomId: string) => `/rooms/${roomId}/chat`,
+  CHAT_MESSAGES: (roomId: string) => `/rooms/${roomId}/chat/messages`,
+  CHAT_READ: (roomId: string) => `/rooms/${roomId}/chat/read`,
 } as const;

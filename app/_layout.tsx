@@ -1,8 +1,26 @@
 import '@/global.css';
 import { ThemeProvider } from '@/design';
+import { disconnectChatSocket } from '@/src/features/chat/hooks/useChatSocket';
+import { useChatStore } from '@/src/features/chat/stores/chatStore';
+import { useAuthStore } from '@/src/stores/authStore';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+// 토큰 변경(로그아웃/계정 전환) 시 채팅 소켓·캐시 초기화 안전망
+let prevAuthToken: string | null = useAuthStore.getState().token;
+useAuthStore.subscribe((state) => {
+  const next = state.token;
+  if (prevAuthToken && prevAuthToken !== next) {
+    disconnectChatSocket();
+    useChatStore.setState({
+      messagesByRoom: {},
+      unreadByRoom: {},
+      cursorByRoom: {},
+    });
+  }
+  prevAuthToken = next;
+});
 
 export default function RootLayout() {
   return (

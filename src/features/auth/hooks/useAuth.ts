@@ -1,10 +1,12 @@
+import { useChatStore } from '@/src/features/chat/stores/chatStore';
+import { disconnectChatSocket } from '@/src/features/chat/hooks/useChatSocket';
 import { useAuthStore } from '@/src/stores/authStore';
 import * as KakaoLogin from '@react-native-seoul/kakao-login';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { authApi } from '../api/authApi';
 
 export function useAuth() {
-  const { user, isLoggedIn, isHydrated, setAuth, logout } = useAuthStore();
+  const { user, isLoggedIn, isHydrated, setAuth, logout: storeLogout } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
 
   const loginWithKakao = async () => {
@@ -41,6 +43,17 @@ export function useAuth() {
       setIsLoading(false);
     }
   };
+
+  const logout = useCallback(() => {
+    // 웹소켓/캐시 정리 후 인증 상태 초기화 (순서 중요)
+    disconnectChatSocket();
+    useChatStore.setState({
+      messagesByRoom: {},
+      unreadByRoom: {},
+      cursorByRoom: {},
+    });
+    storeLogout();
+  }, [storeLogout]);
 
   return { user, isLoggedIn, isHydrated, isLoading, loginWithKakao, loginWithMock, logout };
 }

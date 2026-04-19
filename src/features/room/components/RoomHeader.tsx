@@ -1,18 +1,21 @@
 import { IconButton, Text } from '@/src/components/ui';
 import { useTheme } from '@/design';
+import { useChatStore } from '@/src/features/chat/stores/chatStore';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 
 type RoomHeaderProps = {
   roomName: string;
   roomId: string;
+  onChatPress: () => void;
   onCalendarPress: () => void;
   onSettingsPress: () => void;
 };
 
-export function RoomHeader({ roomName, onCalendarPress, onSettingsPress }: RoomHeaderProps) {
+export function RoomHeader({ roomName, roomId, onChatPress, onCalendarPress, onSettingsPress }: RoomHeaderProps) {
   const router = useRouter();
   const { colors } = useTheme();
+  const unread = useChatStore((s) => s.unreadByRoom[roomId] ?? 0);
 
   return (
     <View
@@ -30,6 +33,29 @@ export function RoomHeader({ roomName, onCalendarPress, onSettingsPress }: RoomH
         {roomName}
       </Text>
       <View style={{ flexDirection: 'row', gap: 8 }}>
+        <View>
+          <IconButton
+            icon="message-outline"
+            variant="standard"
+            onPress={onChatPress}
+          />
+          {unread > 0 ? (
+            <View
+              pointerEvents="none"
+              style={{
+                position: 'absolute',
+                top: 4,
+                right: 4,
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                backgroundColor: colors.error,
+                borderWidth: 1.5,
+                borderColor: colors.surface,
+              }}
+            />
+          ) : null}
+        </View>
         <IconButton
           icon="calendar-month-outline"
           variant="standard"
