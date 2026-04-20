@@ -4,9 +4,11 @@ import { Button } from '@/src/components/ui';
 import { ChatDrawer } from '@/src/features/chat/components';
 import { CalendarBottomSheet } from '@/src/features/recognition/components/CalendarBottomSheet';
 import { RecognitionFeed } from '@/src/features/recognition/components/RecognitionFeed';
+import { RoomStoryFeed } from '@/src/features/recognition/components/RoomStoryFeed';
 import { RoomHeader } from '@/src/features/room/components/RoomHeader';
 import { SettingsBottomSheet } from '@/src/features/room/components/SettingsBottomSheet';
 import { useRoom } from '@/src/features/room/hooks/useRoom';
+import { useRoomPreferencesStore } from '@/src/stores/roomPreferencesStore';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Dimensions, View } from 'react-native';
@@ -27,6 +29,9 @@ export default function RoomScreen() {
   const { room, refetch: refetchRoom } = useRoom(id);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const feedMode = useRoomPreferencesStore(
+    (s) => s.prefsByRoom[id]?.feedMode ?? 'vertical',
+  );
 
   const [chatRendered, setChatRendered] = useState(false);
   const chatProgress = useSharedValue(0);
@@ -97,7 +102,11 @@ export default function RoomScreen() {
 
       <GestureDetector gesture={swipeToChat}>
         <View style={{ flex: 1 }}>
-          <RecognitionFeed roomId={id} onRecognized={refetchRoom} members={room.members} />
+          {feedMode === 'story' ? (
+            <RoomStoryFeed roomId={id} members={room.members} />
+          ) : (
+            <RecognitionFeed roomId={id} members={room.members} />
+          )}
 
           <View style={{ paddingHorizontal: 20, paddingBottom: 16, paddingTop: 8 }}>
             <Button

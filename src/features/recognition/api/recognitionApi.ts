@@ -2,7 +2,10 @@ import { CONFIG } from '@/src/constants/config';
 import { ENDPOINTS } from '@/src/api/endpoints';
 import { useAuthStore } from '@/src/stores/authStore';
 import { apiClient } from '@/src/api/client';
-import type { CalendarDay, Recognition } from '../types/recognition.types';
+import type {
+  CalendarDay,
+  Recognition,
+} from '../types/recognition.types';
 import { Platform } from 'react-native';
 
 export const recognitionApi = {
@@ -44,15 +47,15 @@ export const recognitionApi = {
     return response.json();
   },
 
-  recognizePhoto: async (photoId: string): Promise<Recognition> => {
-    return apiClient<Recognition>(ENDPOINTS.RECOGNIZE(photoId), {
-      method: 'POST',
-    });
-  },
-
   getCalendar: async (roomId: string, year: number, month: number): Promise<CalendarDay[]> => {
     return apiClient<CalendarDay[]>(
       `${ENDPOINTS.CALENDAR(roomId)}?year=${year}&month=${month}`,
+    );
+  },
+
+  getPhotosByDate: async (roomId: string, date: string): Promise<Recognition[]> => {
+    return apiClient<Recognition[]>(
+      `${ENDPOINTS.PHOTOS_BY_DATE(roomId)}?date=${date}`,
     );
   },
 };

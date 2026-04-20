@@ -15,6 +15,7 @@ type CalendarViewProps = {
   members: RoomMember[];
   onMonthChange: (direction: 'prev' | 'next') => void;
   onGoToMonth: (year: number, month: number) => void;
+  onDayPress?: (dateStr: string) => void;
 };
 
 export function CalendarView({
@@ -24,6 +25,7 @@ export function CalendarView({
   members,
   onMonthChange,
   onGoToMonth,
+  onDayPress,
 }: CalendarViewProps) {
   const { colors } = useTheme();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -55,6 +57,7 @@ export function CalendarView({
           month={month}
           daysByMonth={daysByMonth}
           onMonthChange={onMonthChange}
+          onDayPress={onDayPress}
         />
       )}
 

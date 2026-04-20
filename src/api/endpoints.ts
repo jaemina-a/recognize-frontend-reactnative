@@ -13,10 +13,10 @@ export const ENDPOINTS = {
   ROOM_JOIN: '/rooms/join',
   ROOM_LEAVE: (id: string) => `/rooms/${id}/leave`,
 
-  // Photos & Recognition
+  // Photos
   PHOTOS: (roomId: string) => `/rooms/${roomId}/photos`,
-  RECOGNIZE: (photoId: string) => `/photos/${photoId}/recognize`,
   CALENDAR: (roomId: string) => `/rooms/${roomId}/calendar`,
+  PHOTOS_BY_DATE: (roomId: string) => `/rooms/${roomId}/photos/by-date`,
 
   // Chat
   CHAT_ROOM: (roomId: string) => `/rooms/${roomId}/chat`,

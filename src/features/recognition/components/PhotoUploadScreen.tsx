@@ -48,7 +48,7 @@ export function PhotoUploadScreen() {
     if (existingPhoto) {
       Alert.alert(
         '재업로드',
-        '이미 업로드한 사진이 있습니다. 새 사진으로 교체하시겠습니까?\n(기존 인정 기록은 초기화됩니다)',
+        '이미 오늘 올린 사진이 있습니다. 새 사진으로 교체하시겠습니까?',
         [
           { text: '취소', style: 'cancel' },
           { text: '교체', style: 'destructive', onPress: doUpload },

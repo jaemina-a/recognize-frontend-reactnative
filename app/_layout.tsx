@@ -2,6 +2,7 @@ import '@/global.css';
 import { ThemeProvider } from '@/design';
 import { disconnectChatSocket } from '@/src/features/chat/hooks/useChatSocket';
 import { useChatStore } from '@/src/features/chat/stores/chatStore';
+import { StoryViewer } from '@/src/features/recognition/components/StoryViewer';
 import { useAuthStore } from '@/src/stores/authStore';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -38,6 +39,7 @@ export default function RootLayout() {
             <Stack.Screen name="(main)" />
             <Stack.Screen name="room" />
           </Stack>
+          <StoryViewer />
         </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

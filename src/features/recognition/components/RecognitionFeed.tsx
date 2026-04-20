@@ -4,7 +4,6 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useMemo } from 'react';
 import { FlatList, View } from 'react-native';
 import { useRecognitionFeed } from '../hooks/useRecognitionFeed';
-import { useRecognize } from '../hooks/useVote';
 import { EmptyFeed } from './EmptyFeed';
 import { EmptyMemberCard } from './EmptyMemberCard';
 import { RecognitionCard } from './RecognitionCard';
@@ -12,16 +11,14 @@ import { RecognitionCard } from './RecognitionCard';
 type RecognitionFeedProps = {
   roomId: string;
   members?: RoomMember[];
-  onRecognized?: () => void;
 };
 
 type FeedRow =
   | { kind: 'recognition'; id: string; data: ReturnType<typeof useRecognitionFeed>['feed'][number] }
   | { kind: 'empty'; id: string; member: RoomMember };
 
-export function RecognitionFeed({ roomId, members = [], onRecognized }: RecognitionFeedProps) {
+export function RecognitionFeed({ roomId, members = [] }: RecognitionFeedProps) {
   const { feed, refetch } = useRecognitionFeed(roomId);
-  const { recognize } = useRecognize();
   const currentUserId = useAuthStore((s) => s.user?.id);
 
   useFocusEffect(
@@ -29,16 +26,6 @@ export function RecognitionFeed({ roomId, members = [], onRecognized }: Recognit
       refetch();
     }, [refetch]),
   );
-
-  const handleRecognize = async (photoId: string) => {
-    try {
-      await recognize(photoId);
-      refetch();
-      onRecognized?.();
-    } catch {
-      /* handled in hook */
-    }
-  };
 
   // Rows: actual uploads first, then empty cards for members who haven't uploaded.
   const rows = useMemo<FeedRow[]>(() => {
@@ -72,7 +59,6 @@ export function RecognitionFeed({ roomId, members = [], onRecognized }: Recognit
             <RecognitionCard
               recognition={item.data}
               isOwnPhoto={item.data.uploaderId === currentUserId}
-              onRecognize={() => handleRecognize(item.data.id)}
             />
           );
         }}

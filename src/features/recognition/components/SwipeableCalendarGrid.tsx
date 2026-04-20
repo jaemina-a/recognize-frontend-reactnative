@@ -1,7 +1,7 @@
 import { motion, useTheme } from '@/design';
 import { Text } from '@/src/components/ui';
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
-import { Dimensions, View } from 'react-native';
+import { Dimensions, Pressable, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
@@ -17,8 +17,6 @@ const THRESHOLD = PANEL_WIDTH * 0.3;
 const DAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
 const CELL_HEIGHT = 56;
 const TOTAL_CELLS = 42; // 6 rows × 7 cols — fixed grid size
-
-const today = new Date();
 
 function offsetMonth(year: number, month: number, delta: number) {
   const total = year * 12 + (month - 1) + delta;
@@ -46,11 +44,13 @@ type MonthGridProps = {
   year: number;
   month: number;
   dayMap: Map<string, string[]>;
+  onDayPress?: (dateStr: string) => void;
 };
 
-function MonthGrid({ year, month, dayMap }: MonthGridProps) {
+function MonthGrid({ year, month, dayMap, onDayPress }: MonthGridProps) {
   const { colors } = useTheme();
   const rows = useMemo(() => buildRows(year, month), [year, month]);
+  const today = new Date();
 
   return (
     <View style={{ width: PANEL_WIDTH, paddingHorizontal: 8 }}>
@@ -78,8 +78,9 @@ function MonthGrid({ year, month, dayMap }: MonthGridProps) {
               day === today.getDate();
 
             return (
-              <View
+              <Pressable
                 key={colIndex}
+                onPress={day !== null && dotColors.length > 0 ? () => onDayPress?.(dateStr) : undefined}
                 style={{
                   flex: 1,
                   height: CELL_HEIGHT,
@@ -111,7 +112,7 @@ function MonthGrid({ year, month, dayMap }: MonthGridProps) {
                     <CalendarDayIndicator colors={dotColors} />
                   </>
                 )}
-              </View>
+              </Pressable>
             );
           })}
         </View>
@@ -125,16 +126,17 @@ type SwipeableCalendarGridProps = {
   month: number;
   daysByMonth: Map<string, CalendarDay[]>;
   onMonthChange: (direction: 'prev' | 'next') => void;
+  onDayPress?: (dateStr: string) => void;
 };
 
 function toDayMap(days: CalendarDay[] | undefined): Map<string, string[]> {
   const map = new Map<string, string[]>();
   if (!days) return map;
-  for (const d of days) map.set(d.date, d.recognitions.map((r) => r.color));
+  for (const d of days) map.set(d.date, d.uploads.map((r) => r.color));
   return map;
 }
 
-export function SwipeableCalendarGrid({ year, month, daysByMonth, onMonthChange }: SwipeableCalendarGridProps) {
+export function SwipeableCalendarGrid({ year, month, daysByMonth, onMonthChange, onDayPress }: SwipeableCalendarGridProps) {
   const translateX = useSharedValue(-PANEL_WIDTH);
   const gestureStartX = useSharedValue(-PANEL_WIDTH);
 
@@ -202,9 +204,9 @@ export function SwipeableCalendarGrid({ year, month, daysByMonth, onMonthChange 
         <Animated.View
           style={[{ flexDirection: 'row', width: PANEL_WIDTH * 3 }, animStyle]}
         >
-          <MonthGrid year={prev.year} month={prev.month} dayMap={prevDayMap} />
-          <MonthGrid year={year} month={month} dayMap={currDayMap} />
-          <MonthGrid year={next.year} month={next.month} dayMap={nextDayMap} />
+          <MonthGrid year={prev.year} month={prev.month} dayMap={prevDayMap} onDayPress={onDayPress} />
+          <MonthGrid year={year} month={month} dayMap={currDayMap} onDayPress={onDayPress} />
+          <MonthGrid year={next.year} month={next.month} dayMap={nextDayMap} onDayPress={onDayPress} />
         </Animated.View>
       </GestureDetector>
     </View>

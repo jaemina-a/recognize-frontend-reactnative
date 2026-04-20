@@ -6,19 +6,15 @@ export type Recognition = {
   uploaderColor: string;
   photoUrl: string;
   uploadedAt: string;
-  isRecognized: boolean;
-  recognizedBy: {
-    userId: string;
-    nickname: string;
-    recognizedAt: string;
-  } | null;
+};
+
+export type CalendarUpload = {
+  userId: string;
+  nickname: string;
+  color: string;
 };
 
 export type CalendarDay = {
   date: string;
-  recognitions: {
-    userId: string;
-    nickname: string;
-    color: string;
-  }[];
+  uploads: CalendarUpload[];
 };
