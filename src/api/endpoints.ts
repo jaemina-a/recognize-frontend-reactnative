@@ -4,7 +4,7 @@ export const ENDPOINTS = {
   AUTH_MOCK: '/auth/mock',
   AUTH_REFRESH: '/auth/refresh',
   AUTH_ME: '/auth/me',
-  AUTH_LOGOUT: '/auth/logout',
+  // 로그아웃은 JWT 특성상 서버 엔드포인트 없음 — 클라이언트 토큰 삭제로 처리
 
   // Room
   ROOMS: '/rooms',

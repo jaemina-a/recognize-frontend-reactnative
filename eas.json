@@ -37,7 +37,7 @@
       },
       "env": {
         "APP_VARIANT": "production",
-        "EXPO_PUBLIC_API_URL": "https://api.lookup.app"
+        "EXPO_PUBLIC_API_URL": "https://api.lookup-app.co.kr"
       }
     }
   },
