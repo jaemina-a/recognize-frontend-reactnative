@@ -12,7 +12,7 @@ import { DRAWER_WIDTH } from '@/src/features/main/components/ProfileDrawer';
 import { useAuthStore } from '@/src/stores/authStore';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, Image, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS, useSharedValue, withSpring, ReduceMotion } from 'react-native-reanimated';
 import { useRoomList } from '../hooks/useRoomList';
@@ -105,9 +105,11 @@ export function RoomListScreen() {
               size={40}
               onPress={openDrawer}
             />
-            <Text variant="titleLarge" color={colors.primary} style={{ fontWeight: '700' }}>
-              recognizer
-            </Text>
+            <Image
+              source={require('@/assets/images/cloud-logo.png')}
+              style={{ width: 65, height: 65 }}
+              resizeMode="contain"
+            />
             <IconButton
               icon="plus"
               variant="standard"

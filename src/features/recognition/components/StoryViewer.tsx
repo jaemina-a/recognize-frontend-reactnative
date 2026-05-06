@@ -1,5 +1,5 @@
 import { Text } from '@/src/components/ui';
-import { CONFIG } from '@/src/constants/config';
+import { resolvePhotoUri } from '@/src/utils/photoUrl';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useEffect, useRef, useState } from 'react';
@@ -210,7 +210,7 @@ export function StoryViewer() {
                       }}
                     >
                       <Image
-                        source={{ uri: `${CONFIG.API_URL}/${item.photoUrl}` }}
+                        source={{ uri: resolvePhotoUri(item.photoUrl) }}
                         style={{ width: SCREEN_W, height: SCREEN_H }}
                         contentFit="contain"
                         transition={200}

@@ -2,7 +2,6 @@ export const ENDPOINTS = {
   // Auth
   AUTH_KAKAO: '/auth/kakao',
   AUTH_MOCK: '/auth/mock',
-  AUTH_GOOGLE: '/auth/google',
   AUTH_REFRESH: '/auth/refresh',
   AUTH_ME: '/auth/me',
   AUTH_LOGOUT: '/auth/logout',

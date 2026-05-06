@@ -1,5 +1,6 @@
 import '@/global.css';
 import { ThemeProvider } from '@/design';
+import { RootErrorBoundary } from '@/src/components/RootErrorBoundary';
 import { disconnectChatSocket } from '@/src/features/chat/hooks/useChatSocket';
 import { useChatStore } from '@/src/features/chat/stores/chatStore';
 import { StoryViewer } from '@/src/features/recognition/components/StoryViewer';
@@ -25,23 +26,25 @@ useAuthStore.subscribe((state) => {
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <ThemeProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              animation: 'slide_from_right',
-              animationDuration: 250,
-            }}
-          >
-            <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
-            <Stack.Screen name="(main)" />
-            <Stack.Screen name="room" />
-          </Stack>
-          <StoryViewer />
-        </ThemeProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <RootErrorBoundary>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <ThemeProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                animationDuration: 250,
+              }}
+            >
+              <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
+              <Stack.Screen name="(main)" />
+              <Stack.Screen name="room" />
+            </Stack>
+            <StoryViewer />
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </RootErrorBoundary>
   );
 }

@@ -1,6 +1,6 @@
 import { Text } from '@/src/components/ui';
 import { shape, useTheme } from '@/design';
-import { CONFIG } from '@/src/constants/config';
+import { resolvePhotoUri } from '@/src/utils/photoUrl';
 import { formatTime } from '@/src/utils/format';
 import { Image } from 'expo-image';
 import { View } from 'react-native';
@@ -27,7 +27,7 @@ export function RecognitionCard({ recognition }: RecognitionCardProps) {
       >
         {recognition.photoUrl ? (
           <Image
-            source={{ uri: `${CONFIG.API_URL}/${recognition.photoUrl}` }}
+            source={{ uri: resolvePhotoUri(recognition.photoUrl) }}
             style={{ width: '100%', height: '100%' }}
             contentFit="cover"
           />

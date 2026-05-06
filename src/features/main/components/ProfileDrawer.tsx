@@ -133,7 +133,7 @@ export function ProfileDrawer({ rendered, progress, onClose, user, onLogout }: P
             >
               {user?.nickname ?? '게스트'}
             </Text>
-            {user?.id ? (
+            {/* {user?.id ? (
               <Text
                 variant="bodySmall"
                 color={colors.onSurfaceVariant}
@@ -141,7 +141,7 @@ export function ProfileDrawer({ rendered, progress, onClose, user, onLogout }: P
               >
                 @{user.id}
               </Text>
-            ) : null}
+            ) : null} */}
           </View>
 
           {/* Divider */}

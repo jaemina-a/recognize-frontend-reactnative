@@ -1,5 +1,5 @@
 import { Text } from '@/src/components/ui';
-import { CONFIG } from '@/src/constants/config';
+import { resolvePhotoUri } from '@/src/utils/photoUrl';
 import type { RoomMember } from '@/src/features/room/types/room.types';
 import { Image } from 'expo-image';
 import { useFocusEffect } from 'expo-router';
@@ -110,7 +110,7 @@ export function RoomStoryFeed({ roomId }: RoomStoryFeedProps) {
                 }}
               >
                 <Image
-                  source={{ uri: `${CONFIG.API_URL}/${item.photoUrl}` }}
+                  source={{ uri: resolvePhotoUri(item.photoUrl) }}
                   style={{ width: size.w, height: size.h }}
                   contentFit="contain"
                   transition={200}

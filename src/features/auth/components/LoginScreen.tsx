@@ -22,10 +22,6 @@ export function LoginScreen() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    Alert.alert('준비 중', '구글 로그인은 준비 중입니다.');
-  };
-
   const handleMockLogin = async (nickname: string) => {
     try {
       await loginWithMock(nickname);
@@ -40,7 +36,6 @@ export function LoginScreen() {
         <LoginHeader />
         <View>
           <SocialLoginButton provider="kakao" onPress={handleKakaoLogin} disabled={isLoading} />
-          <SocialLoginButton provider="google" onPress={handleGoogleLogin} />
         </View>
 
         <View style={{ marginTop: 32 }}>
