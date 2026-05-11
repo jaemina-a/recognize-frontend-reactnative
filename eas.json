@@ -44,8 +44,8 @@
   "submit": {
     "production": {
       "ios": {
-        "ascAppId": "PLACEHOLDER_APP_STORE_CONNECT_ID",
-        "appleTeamId": "PLACEHOLDER_APPLE_TEAM_ID"
+        "ascAppId": "6768264675",
+        "appleTeamId": "7P62S4BU95"
       },
       "android": {
         "serviceAccountKeyPath": "./google-play-service-account.json",
