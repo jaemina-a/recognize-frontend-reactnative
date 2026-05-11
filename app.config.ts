@@ -16,16 +16,17 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
     name: isProduction ? 'Lookup' : variant === 'preview' ? 'Lookup (Preview)' : 'Lookup (Dev)',
-    slug: 'recognizer',
+    slug: 'lookup',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
-    scheme: 'recognizer',
+    scheme: 'lookup',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
+    owner: 'jaemine',
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.recognizer.app',
+      bundleIdentifier: 'com.lookup.app',
       buildNumber: '1',
       infoPlist: {
         NSCameraUsageDescription: '오늘의 갓생 사진을 촬영하기 위해 카메라 접근이 필요합니다.',
@@ -36,7 +37,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       },
     },
     android: {
-      package: 'com.recognizer.app',
+      package: 'com.lookup.app',
       versionCode: 1,
       adaptiveIcon: {
         backgroundColor: '#A9CCEC',
@@ -91,8 +92,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       apiUrl: process.env.EXPO_PUBLIC_API_URL,
       variant,
       eas: {
-        // EAS 프로젝트 연결 시 자동 채워짐
-        projectId: process.env.EAS_PROJECT_ID,
+        projectId: 'b7dc5447-18b9-4a13-a27a-f15a5f64e8ae',
       },
     },
   };

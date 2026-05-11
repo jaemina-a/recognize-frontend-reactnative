@@ -24,7 +24,7 @@
       },
       "env": {
         "APP_VARIANT": "preview",
-        "EXPO_PUBLIC_API_URL": "https://api-staging.lookup.app"
+        "EXPO_PUBLIC_API_URL": "https://api.lookup-app.co.kr"
       }
     },
     "production": {

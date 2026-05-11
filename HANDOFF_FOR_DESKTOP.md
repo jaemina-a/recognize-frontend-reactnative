@@ -25,7 +25,7 @@
 
 ```
 recognize-backend-nestjs/    # NestJS 11 + TypeORM + PostgreSQL
-recognize-frontend-reactnative/  # Expo SDK + React Native
+lookup-frontend-reactnative/  # Expo SDK + React Native
 docs/                         # 기획/배포 문서
 ```
 
@@ -245,7 +245,7 @@ npm run start:dev
 
 ### 5.5 프론트엔드 로컬 실행
 ```powershell
-cd recognize-frontend-reactnative
+cd lookup-frontend-reactnative
 npm ci
 npx expo start
 ```

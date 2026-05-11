@@ -24,7 +24,7 @@
 ### 첫 세팅 (clone 후 최초 1회)
 
 ```bash
-cd recognize-frontend-reactnative
+cd lookup-frontend-reactnative
 
 # 의존성 설치
 npm install
@@ -110,7 +110,7 @@ ANDROID_HOME = C:\Users\<사용자명>\AppData\Local\Android\Sdk
 ### 첫 세팅 (clone 후 최초 1회)
 
 ```bash
-cd recognize-frontend-reactnative
+cd lookup-frontend-reactnative
 
 npm install
 
