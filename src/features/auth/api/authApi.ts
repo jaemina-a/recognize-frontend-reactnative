@@ -9,14 +9,19 @@ type LoginResponse = {
 
 export const authApi = {
   loginWithKakao: async (kakaoAccessToken: string): Promise<LoginResponse> => {
-    const response = await fetch(`${CONFIG.API_URL}/auth/kakao`, {
+    const url = `${CONFIG.API_URL}/auth/kakao`;
+    console.log('[KAKAO][API] POST', url);
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ accessToken: kakaoAccessToken }),
     });
 
+    console.log('[KAKAO][API] response status:', response.status);
+
     if (!response.ok) {
       const error = await response.text();
+      console.error('[KAKAO][API] error body:', error);
       throw new Error(error || '로그인에 실패했습니다.');
     }
 

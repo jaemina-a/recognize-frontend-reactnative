@@ -58,7 +58,6 @@ type UseChatSocketArgs = {
 export function useChatSocket({ roomId, chatRoomId, enabled }: UseChatSocketArgs) {
   const token = useAuthStore((s) => s.token);
   const appendIncoming = useChatStore((s) => s.appendIncoming);
-  const confirmPending = useChatStore((s) => s.confirmPending);
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
@@ -67,26 +66,29 @@ export function useChatSocket({ roomId, chatRoomId, enabled }: UseChatSocketArgs
     socketRef.current = socket;
 
     const onConnect = () => {
-      socket.emit('chat:join', { chatRoomId });
+      socket.emit('chat:join', { chatRoomId }, (ack: Ack<unknown> | undefined) => {
+        if (ack && !ack.ok) {
+          console.warn('[chat] join failed', ack.error);
+        }
+      });
     };
     const onMessage = (msg: ChatMessage) => {
-      if (msg.clientId) {
-        confirmPending(roomId, msg.clientId, msg);
-      } else {
-        appendIncoming(roomId, msg);
-      }
+      // 송신자 본인 broadcast(clientId 매칭)와 수신자 흐름을 store에서 통합 처리
+      appendIncoming(roomId, msg);
     };
 
     socket.on('connect', onConnect);
+    socket.on('reconnect', onConnect);
     socket.on('chat:message', onMessage);
     if (socket.connected) onConnect();
 
     return () => {
       socket.off('connect', onConnect);
+      socket.off('reconnect', onConnect);
       socket.off('chat:message', onMessage);
       socket.emit('chat:leave', { chatRoomId });
     };
-  }, [enabled, token, chatRoomId, roomId, appendIncoming, confirmPending]);
+  }, [enabled, token, chatRoomId, roomId, appendIncoming]);
 
   return socketRef;
 }

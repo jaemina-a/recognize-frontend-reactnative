@@ -1,4 +1,4 @@
-import { motion, useTheme } from '@/design';
+﻿import { motion, useTheme } from '@/design';
 import { ScreenContainer } from '@/src/components/layout';
 import { Avatar, DropdownMenu, IconButton, Text, type DropdownMenuItem } from '@/src/components/ui';
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
@@ -90,7 +90,7 @@ export function RoomListScreen() {
   return (
     <ScreenContainer>
       <GestureDetector gesture={openDrawerGesture}>
-        <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 12 }}>
+        <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 24 }}>
           <View
             style={{
               height: 56,
@@ -107,7 +107,7 @@ export function RoomListScreen() {
             />
             <Image
               source={require('@/assets/images/cloud-logo.png')}
-              style={{ width: 65, height: 65 }}
+              style={{ width: 90, height: 90 }}
               resizeMode="contain"
             />
             <IconButton

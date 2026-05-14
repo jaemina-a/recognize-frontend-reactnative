@@ -29,6 +29,7 @@
     },
     "production": {
       "autoIncrement": true,
+      "channel": "production",
       "ios": {
         "image": "latest"
       },
@@ -44,7 +45,7 @@
   "submit": {
     "production": {
       "ios": {
-        "ascAppId": "6768264675",
+        "ascAppId": "6768269048",
         "appleTeamId": "7P62S4BU95"
       },
       "android": {

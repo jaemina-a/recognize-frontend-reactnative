@@ -57,11 +57,21 @@ export const useChatStore = create<ChatState>((set) => ({
   appendIncoming: (roomId, message) =>
     set((s) => {
       const prev = s.messagesByRoom[roomId] ?? [];
-      // clientId 매칭되는 pending이 있으면 confirmPending이 처리. 여기선 신규만.
-      const exists = prev.some(
-        (m) => m.id === message.id || (message.clientId && m.clientId === message.clientId),
-      );
-      if (exists) return s;
+
+      // 1) 같은 id가 이미 있으면 무시 (재전송/재join 중복 방지)
+      if (message.id && prev.some((m) => m.id === message.id)) return s;
+
+      // 2) 같은 clientId의 pending이 있으면 그 자리에서 교체 (송신자 본인 broadcast 흐름)
+      if (message.clientId) {
+        const idx = prev.findIndex((m) => m.clientId === message.clientId);
+        if (idx >= 0) {
+          const replaced = [...prev];
+          replaced[idx] = message;
+          return { messagesByRoom: { ...s.messagesByRoom, [roomId]: replaced } };
+        }
+      }
+
+      // 3) 그 외에는 신규 메시지로 prepend (수신자 흐름)
       return {
         messagesByRoom: { ...s.messagesByRoom, [roomId]: dedupeAndCap([message, ...prev]) },
       };

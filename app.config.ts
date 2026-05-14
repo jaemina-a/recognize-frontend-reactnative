@@ -24,20 +24,38 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
     owner: 'jaemine',
+    runtimeVersion: { policy: 'appVersion' },
+    updates: {
+      url: 'https://u.expo.dev/b7dc5447-18b9-4a13-a27a-f15a5f64e8ae',
+    },
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.lookup.app',
-      buildNumber: '1',
+      bundleIdentifier: 'kr.co.lookupapp.lookuproom',
       infoPlist: {
+        ITSAppUsesNonExemptEncryption: false,
         NSCameraUsageDescription: '오늘의 갓생 사진을 촬영하기 위해 카메라 접근이 필요합니다.',
         NSPhotoLibraryUsageDescription:
           '프로필 및 인증 사진을 등록하기 위해 사진 라이브러리 접근이 필요합니다.',
         NSPhotoLibraryAddUsageDescription:
           '저장한 사진을 사진 라이브러리에 추가하기 위해 접근이 필요합니다.',
+        // 카카오 SDK iOS 필수 설정
+        KAKAO_APP_KEY: kakaoAppKey,
+        CFBundleURLTypes: [
+          {
+            CFBundleTypeRole: 'Editor',
+            CFBundleURLName: 'kakao',
+            CFBundleURLSchemes: [`kakao${kakaoAppKey}`],
+          },
+        ],
+        LSApplicationQueriesSchemes: [
+          'kakaokompassauth', // 카카오톡 로그인
+          'kakaolink', // 카카오링크
+          'kakaoplus', // 카카오 플러스친구
+        ],
       },
     },
     android: {
-      package: 'com.lookup.app',
+      package: 'kr.co.lookupapp.lookuproom',
       versionCode: 1,
       adaptiveIcon: {
         backgroundColor: '#A9CCEC',
@@ -55,6 +73,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     plugins: [
       'expo-router',
+      [
+        'expo-image-picker',
+        {
+          cameraPermission: '오늘의 갓생 사진을 촬영하기 위해 카메라 접근이 필요합니다.',
+          photosPermission: '프로필 및 인증 사진을 등록하기 위해 사진 라이브러리 접근이 필요합니다.',
+          microphonePermission: false,
+        },
+      ],
       [
         'expo-splash-screen',
         {

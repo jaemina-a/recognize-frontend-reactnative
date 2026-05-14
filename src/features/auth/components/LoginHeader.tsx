@@ -10,7 +10,7 @@ export function LoginHeader() {
         Lookup
       </Text>
       <Text variant="bodyMedium" color={colors.onSurfaceVariant}>
-        서로의 갓생을 인정해주는 공간
+        OTA 업데이트 테스트 성공! 🎉
       </Text>
     </View>
   );
