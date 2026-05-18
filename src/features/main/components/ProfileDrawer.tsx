@@ -76,7 +76,7 @@ export function ProfileDrawer({ rendered, progress, onClose, user, onLogout }: P
   const items: DrawerItem[] = [
     {
       icon: 'logout',
-      label: '로그아웃웃',
+      label: '로그아웃',
       onPress: () => {
         onClose();
         // 닫는 애니메이션 후 로그아웃

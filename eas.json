@@ -11,7 +11,8 @@
         "simulator": true
       },
       "env": {
-        "APP_VARIANT": "development"
+        "APP_VARIANT": "development",
+        "EXPO_PUBLIC_ENABLE_MOCK_LOGIN": "true"
       }
     },
     "preview": {
@@ -24,7 +25,8 @@
       },
       "env": {
         "APP_VARIANT": "preview",
-        "EXPO_PUBLIC_API_URL": "https://api.lookup-app.co.kr"
+        "EXPO_PUBLIC_API_URL": "https://api.lookup-app.co.kr",
+        "EXPO_PUBLIC_ENABLE_MOCK_LOGIN": "true"
       }
     },
     "production": {

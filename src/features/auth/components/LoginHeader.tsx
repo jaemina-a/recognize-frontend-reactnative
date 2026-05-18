@@ -10,7 +10,7 @@ export function LoginHeader() {
         Lookup
       </Text>
       <Text variant="bodyMedium" color={colors.onSurfaceVariant}>
-        OTA 업데이트 테스트 성공! 🎉
+        OTA 업데이트 테스트 성공!
       </Text>
     </View>
   );
