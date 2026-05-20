@@ -29,6 +29,7 @@ type Props = {
   onClose: () => void;
   user: User | null;
   onLogout: () => void;
+  onDeleteAccount: () => void;
 };
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -41,7 +42,7 @@ const CLOSE_VELOCITY_THRESHOLD = 500;
  * - `Modal`을 사용하지 않아 mount 지연 없이 첫 프레임부터 자연스럽게 슬라이드.
  * - `progress` sharedValue는 부모가 소유 → 외부 스와이프 제스처와 진행도를 공유 가능.
  */
-export function ProfileDrawer({ rendered, progress, onClose, user, onLogout }: Props) {
+export function ProfileDrawer({ rendered, progress, onClose, user, onLogout, onDeleteAccount }: Props) {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -81,6 +82,15 @@ export function ProfileDrawer({ rendered, progress, onClose, user, onLogout }: P
         onClose();
         // 닫는 애니메이션 후 로그아웃
         setTimeout(onLogout, 250);
+      },
+      destructive: true,
+    },
+    {
+      icon: 'account-remove',
+      label: '계정 삭제',
+      onPress: () => {
+        onClose();
+        setTimeout(onDeleteAccount, 250);
       },
       destructive: true,
     },

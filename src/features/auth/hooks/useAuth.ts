@@ -1,8 +1,10 @@
 import { useChatStore } from '@/src/features/chat/stores/chatStore';
 import { disconnectChatSocket } from '@/src/features/chat/hooks/useChatSocket';
 import { useAuthStore } from '@/src/stores/authStore';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import * as KakaoLogin from '@react-native-seoul/kakao-login';
 import { useCallback, useState } from 'react';
+import { Platform } from 'react-native';
 import { authApi } from '../api/authApi';
 
 export function useAuth() {
@@ -50,13 +52,58 @@ export function useAuth() {
     }
   };
 
-  const loginWithMock = async (nickname: string) => {
+  const loginWithApple = async () => {
+    if (Platform.OS !== 'ios') {
+      throw new Error('Sign in with Apple is only available on iOS');
+    }
     try {
       setIsLoading(true);
-      const result = await authApi.loginWithMock(nickname);
+      console.log('[APPLE][1] AppleAuthentication.signInAsync()');
+
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      if (!credential.identityToken) {
+        throw new Error('Apple identityToken is missing');
+      }
+
+      const fullName = credential.fullName;
+      const nickname =
+        fullName?.givenName?.trim() ||
+        fullName?.familyName?.trim() ||
+        undefined;
+
+      console.log('[APPLE][2] 백엔드 /auth/apple 요청', {
+        identityTokenLength: credential.identityToken.length,
+        hasAuthorizationCode: !!credential.authorizationCode,
+        hasNickname: !!nickname,
+      });
+
+      const result = await authApi.loginWithApple({
+        identityToken: credential.identityToken,
+        authorizationCode: credential.authorizationCode,
+        nickname,
+      });
+
+      console.log('[APPLE][3] 백엔드 응답 성공', {
+        userId: result.user.id,
+        nickname: result.user.nickname,
+      });
+
       setAuth(result.user, result.accessToken, result.refreshToken);
-    } catch (error) {
-      console.error('목업 로그인 실패:', error);
+    } catch (error: any) {
+      if (error?.code === 'ERR_REQUEST_CANCELED' || error?.code === 'ERR_CANCELED') {
+        console.log('[APPLE][X] 사용자 취소');
+      } else {
+        console.error('[APPLE][X] Apple 로그인 실패:', {
+          code: error?.code,
+          message: error?.message,
+        });
+      }
       throw error;
     } finally {
       setIsLoading(false);
@@ -74,5 +121,30 @@ export function useAuth() {
     storeLogout();
   }, [storeLogout]);
 
-  return { user, isLoggedIn, isHydrated, isLoading, loginWithKakao, loginWithMock, logout };
+  const deleteAccount = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      await authApi.deleteAccount();
+      disconnectChatSocket();
+      useChatStore.setState({
+        messagesByRoom: {},
+        unreadByRoom: {},
+        cursorByRoom: {},
+      });
+      storeLogout();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [storeLogout]);
+
+  return {
+    user,
+    isLoggedIn,
+    isHydrated,
+    isLoading,
+    loginWithKakao,
+    loginWithApple,
+    logout,
+    deleteAccount,
+  };
 }

@@ -53,5 +53,10 @@ export async function apiClient<T>(
     throw new Error(`API Error: ${response.status}`);
   }
 
+  // 204 No Content: 응답 본문 없음
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
   return response.json();
 }

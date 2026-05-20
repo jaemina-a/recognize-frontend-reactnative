@@ -12,7 +12,7 @@ import { DRAWER_WIDTH } from '@/src/features/main/components/ProfileDrawer';
 import { useAuthStore } from '@/src/stores/authStore';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { FlatList, Image, View } from 'react-native';
+import { FlatList, Image, View, Alert } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS, useSharedValue, withSpring, ReduceMotion } from 'react-native-reanimated';
 import { useRoomList } from '../hooks/useRoomList';
@@ -24,7 +24,7 @@ export function RoomListScreen() {
   const router = useRouter();
   const { colors } = useTheme();
   const { rooms, refetch } = useRoomList();
-  const { logout } = useAuth();
+  const { logout, deleteAccount } = useAuth();
   const user = useAuthStore((s) => s.user);
 
   const [drawerRendered, setDrawerRendered] = useState(false);
@@ -150,6 +150,40 @@ export function RoomListScreen() {
         onClose={closeDrawer}
         user={user}
         onLogout={logout}
+        onDeleteAccount={() => {
+          Alert.alert(
+            '계정 삭제',
+            '이 작업은 되돌릴 수 없습니다.\n\n• 계정 사용이 중단되고 개인정보가 익명화됩니다.\n• 등록한 사진과 채팅은 다른 함께한 멤버를 위해 보존됩니다.\n• Apple 계정의 경우 Apple 연결도 해제됩니다.\n\n정말로 삭제하시겠습니까?',
+            [
+              { text: '취소', style: 'cancel' },
+              {
+                text: '삭제',
+                style: 'destructive',
+                onPress: () => {
+                  Alert.alert(
+                    '다시 한 번 확인',
+                    '계정을 의해서 삭제합니까?',
+                    [
+                      { text: '취소', style: 'cancel' },
+                      {
+                        text: '삭제',
+                        style: 'destructive',
+                        onPress: async () => {
+                          try {
+                            await deleteAccount();
+                          } catch (e) {
+                            Alert.alert('삭제 실패', '계정 삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                            console.error('[DELETE_ACCOUNT][X]', e);
+                          }
+                        },
+                      },
+                    ],
+                  );
+                },
+              },
+            ],
+          );
+        }}
       />
 
       <CreateRoomSheet visible={createSheetOpen} onClose={() => setCreateSheetOpen(false)} />

@@ -31,6 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'kr.co.lookupapp.lookuproom',
+      usesAppleSignIn: true,
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
         NSCameraUsageDescription: '오늘의 갓생 사진을 촬영하기 위해 카메라 접근이 필요합니다.',
@@ -73,6 +74,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     plugins: [
       'expo-router',
+      'expo-apple-authentication',
       [
         'expo-image-picker',
         {
