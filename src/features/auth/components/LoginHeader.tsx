@@ -7,10 +7,10 @@ export function LoginHeader() {
   return (
     <View style={{ alignItems: 'center', marginBottom: 48 }}>
       <Text variant="displaySmall" color={colors.primary} style={{ marginBottom: 8, fontWeight: '700' }}>
-        Lookup
+        Look up
       </Text>
       <Text variant="bodyMedium" color={colors.onSurfaceVariant}>
-        OTA 업데이트 테스트 성공!
+        
       </Text>
     </View>
   );
